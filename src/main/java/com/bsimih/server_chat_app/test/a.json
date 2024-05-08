@@ -1,0 +1,6 @@
+{
+    "0": "{\"msg\":\"{\"msg\":\"Elhamdülillah, sen nasılsın\",\"type\":\"text\"}\",\"receiver\":\"3\",\"sender\":\"4\"}",
+    "1": "{\"msg\":\"{\"msg\":\"Nasılsın\",\"type\":\"text\"}\",\"receiver\":\"4\",\"sender\":\"3\"}",
+    "2": "{\"msg\":\"{\"msg\":\"Aleykümselam\",\"type\":\"text\"}\",\"receiver\":\"3\",\"sender\":\"4\"}",
+    "3": "{\"msg\":\"{\"msg\":\"Selamunaleyküm\",\"type\":\"text\"}\",\"receiver\":\"4\",\"sender\":\"3\"}"
+}
