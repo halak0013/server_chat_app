@@ -1,10 +1,11 @@
 //Bisimillahirrahmanirrahim
-package com.bsimih.server_chat_app.view.TextField;
+package com.bismih.server_chat_app.view.TextField;
 
 import java.awt.Color;
 import javax.swing.JTextField;
 
-import com.bsimih.server_chat_app.constants.Constantas;
+import com.bismih.server_chat_app.constants.Constantas;
+
 import java.awt.Font;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;

@@ -1,4 +1,4 @@
-package com.bsimih.server_chat_app.utils;
+package com.bismih.server_chat_app.utils;
 
 import java.sql.ResultSet;
 

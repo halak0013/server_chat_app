@@ -67,7 +67,7 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="com.bsimih.server_chat_app.view.TextField.TextFeild1" name="tx_user_name">
+    <Component class="com.bismih.server_chat_app.view.TextField.TextFeild1" name="tx_user_name">
       <Properties>
         <Property name="text" type="java.lang.String" value="Enter vaule"/>
       </Properties>
@@ -80,7 +80,7 @@
         <Property name="text" type="java.lang.String" value="User Name:"/>
       </Properties>
     </Component>
-    <Component class="com.bsimih.server_chat_app.view.TextField.TextFeild1" name="tx_password">
+    <Component class="com.bismih.server_chat_app.view.TextField.TextFeild1" name="tx_password">
       <Properties>
         <Property name="text" type="java.lang.String" value="Enter vaule"/>
       </Properties>
@@ -93,12 +93,12 @@
         <Property name="text" type="java.lang.String" value="Password:"/>
       </Properties>
     </Component>
-    <Component class="com.bsimih.server_chat_app.view.buttons.ButtonN" name="bt_sign_in">
+    <Component class="com.bismih.server_chat_app.view.buttons.ButtonN" name="bt_sign_in">
       <Properties>
         <Property name="text" type="java.lang.String" value="Sign Up"/>
       </Properties>
     </Component>
-    <Component class="com.bsimih.server_chat_app.view.buttons.ButtonN" name="bt_sign_up">
+    <Component class="com.bismih.server_chat_app.view.buttons.ButtonN" name="bt_sign_up">
       <Properties>
         <Property name="text" type="java.lang.String" value="Sign In"/>
       </Properties>

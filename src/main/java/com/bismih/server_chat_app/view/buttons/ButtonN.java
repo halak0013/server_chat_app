@@ -1,7 +1,6 @@
 //Bismillahirrahmanirrahim
-package com.bsimih.server_chat_app.view.buttons;
+package com.bismih.server_chat_app.view.buttons;
 
-import com.bsimih.server_chat_app.constants.Constantas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -10,6 +9,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
+
+import com.bismih.server_chat_app.constants.Constantas;
 
 public class ButtonN extends JButton {
 

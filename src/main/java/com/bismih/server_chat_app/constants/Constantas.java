@@ -1,4 +1,4 @@
-package com.bsimih.server_chat_app.constants;
+package com.bismih.server_chat_app.constants;
 
 
 import java.awt.Color;

@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package com.bsimih.server_chat_app;
+package com.bismih.server_chat_app;
 
 import com.formdev.flatlaf.intellijthemes.FlatArcDarkOrangeIJTheme;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDeepOceanIJTheme;
@@ -28,12 +28,12 @@ public class Client extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        tx_user_name = new com.bsimih.server_chat_app.view.TextField.TextFeild1();
+        tx_user_name = new com.bismih.server_chat_app.view.TextField.TextFeild1();
         jLabel1 = new javax.swing.JLabel();
-        tx_password = new com.bsimih.server_chat_app.view.TextField.TextFeild1();
+        tx_password = new com.bismih.server_chat_app.view.TextField.TextFeild1();
         jLabel2 = new javax.swing.JLabel();
-        bt_sign_in = new com.bsimih.server_chat_app.view.buttons.ButtonN();
-        bt_sign_up = new com.bsimih.server_chat_app.view.buttons.ButtonN();
+        bt_sign_in = new com.bismih.server_chat_app.view.buttons.ButtonN();
+        bt_sign_up = new com.bismih.server_chat_app.view.buttons.ButtonN();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -129,11 +129,11 @@ public class Client extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.bsimih.server_chat_app.view.buttons.ButtonN bt_sign_in;
-    private com.bsimih.server_chat_app.view.buttons.ButtonN bt_sign_up;
+    private com.bismih.server_chat_app.view.buttons.ButtonN bt_sign_in;
+    private com.bismih.server_chat_app.view.buttons.ButtonN bt_sign_up;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private com.bsimih.server_chat_app.view.TextField.TextFeild1 tx_password;
-    private com.bsimih.server_chat_app.view.TextField.TextFeild1 tx_user_name;
+    private com.bismih.server_chat_app.view.TextField.TextFeild1 tx_password;
+    private com.bismih.server_chat_app.view.TextField.TextFeild1 tx_user_name;
     // End of variables declaration//GEN-END:variables
 }

@@ -1,4 +1,4 @@
-package com.bsimih.server_chat_app.utils;
+package com.bismih.server_chat_app.utils;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,7 +9,7 @@ import org.sqlite.*;
 
 
 public class Db_helper {
-    private final String DB_URL = "jdbc:sqlite:src/main/java/com/bsimih/server_chat_app/data/server.db";
+    private final String DB_URL = "jdbc:sqlite:src/main/java/com/bismih/server_chat_app/data/server.db";
     private Connection connection;
 
     public Db_helper() {

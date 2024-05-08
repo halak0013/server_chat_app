@@ -1,9 +1,9 @@
 
 //Bismillahirrahmanirrahim
-package com.bsimih.server_chat_app;
+package com.bismih.server_chat_app;
 
-import com.bsimih.server_chat_app.utils.Db_helper;
-import com.bsimih.server_chat_app.utils.Db_proccess;
+import com.bismih.server_chat_app.utils.Db_helper;
+import com.bismih.server_chat_app.utils.Db_proccess;
 
 /**
  *
