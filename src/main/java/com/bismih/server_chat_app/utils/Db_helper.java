@@ -6,8 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.sqlite.*;
 
-
-
 public class Db_helper {
     private final String DB_URL = "jdbc:sqlite:src/main/java/com/bismih/server_chat_app/data/server.db";
     private Connection connection;
@@ -48,7 +46,7 @@ public class Db_helper {
         }
     }
 
-    public void add_row(String table, String[] columns, String[][] values) {
+    public void add_row(String table, String[] columns, String[][] values) throws SQLException {
 
         String query = "INSERT INTO " + table + " (";
         for (int i = 0; i < columns.length; i++) {
@@ -69,23 +67,13 @@ public class Db_helper {
             }
         }
         query += ")";
-        try {
-            connection.createStatement().executeUpdate(query);
-            System.out.println("Row added to " + table);
-        } catch (SQLiteException e) {
-            //e.printStackTrace();
-            if (e.getErrorCode() == 19) {
-                System.out.println("Row already exists in " + table);
-            }
-            System.out.println(e.getMessage()+" "+ e.getErrorCode());
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
-        }
+
+        connection.createStatement().executeUpdate(query);
+        System.out.println("Row added to " + table);
+
     }
 
-    public void add_row(String table, String[] columns, String[] values) {
+    public void add_row(String table, String[] columns, String[] values) throws SQLException {
 
         String query = "INSERT INTO " + table + " (";
         for (int i = 0; i < columns.length; i++) {
@@ -102,20 +90,10 @@ public class Db_helper {
             }
         }
         query += ")";
-        try {
-            connection.createStatement().executeUpdate(query);
-            System.out.println("Row added to " + table);
-        } catch (SQLiteException e) {
-            //e.printStackTrace();
-            if (e.getErrorCode() == 19) {
-                System.out.println("Row already exists in " + table);
-            }
-            System.out.println(e.getMessage()+" "+ e.getErrorCode());
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
-        }
+
+        connection.createStatement().executeUpdate(query);
+        System.out.println("Row added to " + table);
+
     }
 
     public void delete_row(String table, String[] columns, String[] values) {
@@ -133,7 +111,7 @@ public class Db_helper {
             e.printStackTrace();
             System.out.println(e.getMessage());
         }
-    } 
+    }
 
     public int get_last_id(String table) {
         String query = "SELECT MAX(id) FROM " + table;

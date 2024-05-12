@@ -10,28 +10,28 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
 
-import com.bismih.server_chat_app.constants.Constantas;
+import com.bismih.server_chat_app.constants.Constants;
 
 public class ButtonN extends JButton {
 
-    private Color colorMain = Constantas.btMainColor();
-    private Color colorOver = Constantas.btOverColor();
-    private Color colorClick = Constantas.btClickColor();
-    private Color colorText=Constantas.txNormalColor();
-    private Color colorBorder=Constantas.borderColor();
+    private Color colorMain = Constants.btMainColor();
+    private Color colorOver = Constants.btOverColor();
+    private Color colorClick = Constants.btClickColor();
+    private Color colorText = Constants.txNormalColor();
+    private Color colorBorder = Constants.borderColor();
     private boolean over;
     private short radius = 25;
+    public int[] privateText;
 
     public ButtonN() {
         super();
         // !!!!!!!!!! bu çok önemli yoksa buton başta renksiz oluyor
         setBackground(colorMain);
-        //? butonun eski görüntüsünü siliyor
+        // ? butonun eski görüntüsünü siliyor
         setContentAreaFilled(false);
 
-        //?yazının rengini ayarlıyoruz
+        // ?yazının rengini ayarlıyoruz
         setForeground(colorText);
-
 
         addMouseListener(new MouseAdapter() {
             @Override

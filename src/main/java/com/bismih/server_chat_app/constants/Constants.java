@@ -3,8 +3,14 @@ package com.bismih.server_chat_app.constants;
 
 import java.awt.Color;
 
-public class Constantas {
+public class Constants {
     //private static Color color = new Color(250, 164, 1);
+    public static String server_ip = "localhost";
+    public static int server_port = 57145;
+
+
+
+
     private static Color color = new Color(141, 190, 223);
 
     public static Color btMainColor() {

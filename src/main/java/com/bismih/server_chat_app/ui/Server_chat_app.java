@@ -1,9 +1,9 @@
 
 //Bismillahirrahmanirrahim
-package com.bismih.server_chat_app;
+package com.bismih.server_chat_app.ui;
 
 import com.bismih.server_chat_app.utils.Db_helper;
-import com.bismih.server_chat_app.utils.Db_proccess;
+import com.bismih.server_chat_app.utils.Db_process;
 
 /**
  *
@@ -19,7 +19,8 @@ public class Server_chat_app {
         int s = 3;
         //Db_proccess.addMsg("Nasılsın", "text", r, s, 1);
         //Db_proccess.addMsg("Elhamdülillah, sen nasılsın", "text", s, r, 1);
-        System.out.println(Db_proccess.getMsgs(1, r, s));
+        //System.out.println(Db_proccess.getMsgs(1, r, s));
+        System.out.println(Db_process.getProjects(3));
         db_helper.closeConnection();
     }
 }

@@ -4,7 +4,7 @@ package com.bismih.server_chat_app.view.TextField;
 import java.awt.Color;
 import javax.swing.JTextField;
 
-import com.bismih.server_chat_app.constants.Constantas;
+import com.bismih.server_chat_app.constants.Constants;
 
 import java.awt.Font;
 import java.awt.event.FocusAdapter;
@@ -19,9 +19,9 @@ public class TextFeild1 extends JTextField {
 
     public TextFeild1() {
         super();
-        setBorder(createMatteBorder(0, 0, 2, 0, Constantas.borderColor()));
+        setBorder(createMatteBorder(0, 0, 2, 0, Constants.borderColor()));
         setBackground(new Color(0, 0, 0, 0));
-        setForeground(Constantas.txNormalColor());
+        setForeground(Constants.txNormalColor());
         setText(textT);
         //System.out.println(textT+"ie");
 
@@ -32,7 +32,7 @@ public class TextFeild1 extends JTextField {
             public void focusGained(FocusEvent arg0) {
                 if (getText().equals(textT)) {
                     setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
-                    setForeground(Constantas.txNormalColor());
+                    setForeground(Constants.txNormalColor());
                     setText("");
                     cursoOff();
                 }
@@ -42,7 +42,7 @@ public class TextFeild1 extends JTextField {
             public void focusLost(FocusEvent arg0) {
                 if (getText().length() == 0) {
                     setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 13));
-                    setForeground(Constantas.txHintColor());
+                    setForeground(Constants.txHintColor());
                     setText(textT);
                     cursoOn();
                 }
@@ -54,13 +54,13 @@ public class TextFeild1 extends JTextField {
     private void cursoOff() {
         Font font = getFont().deriveFont(Font.ITALIC);
         setFont(font);
-        setForeground(Constantas.hintColor());
+        setForeground(Constants.hintColor());
     }
 
     private void cursoOn() {
         Font font = getFont().deriveFont(Font.PLAIN);
         setFont(font);
-        setForeground(Constantas.txNormalColor());
+        setForeground(Constants.txNormalColor());
     }
 
     // setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new
