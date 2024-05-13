@@ -199,7 +199,7 @@ public class MainApp extends javax.swing.JFrame {
             public void run() {
                 // [60,63,65]
                 FlatMaterialDeepOceanIJTheme.setup();
-                frame = new MainApp(2);
+                frame = new MainApp(3);
                 frame.setVisible(true);
             }
         });

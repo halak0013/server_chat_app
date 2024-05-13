@@ -199,17 +199,17 @@ public class Db_process {
     /// projenin id ve ismini, user id ye göre getirir
     public static String getUsers(int project_id) {
         db_helper.start_connection();
-        String query = "select user_id from user_project, user project_id where user_project.user_id=user.id and user_project.user_id = "
+        String query = "select user_id, name from user_project, user where user_project.user_id=user.id and user_project.project_id = "
                 + project_id;
         ResultSet rs = db_helper.get_query(query);
-        // JSONObject jObj = new JSONObject();
-        JSONObject jTmp = new JSONObject();
+        System.out.println(query);
+        JSONObject jTmp;
         JSONArray jArr = new JSONArray();
         int i = 0;
         String id, user_id, name;
         try {
             while (rs.next()) {
-                id = Integer.toString(i);
+                jTmp = new JSONObject();
                 user_id = rs.getString("user_id");
                 name = rs.getString("name");
                 jTmp.put("user_id", user_id);
@@ -217,7 +217,7 @@ public class Db_process {
                 jArr.put(jTmp);
                 // jObj.put(Integer.toString(i), "{\"user_id\":\"" + rs.getString("user_id") +
                 // "\", \"name\":\"" + rs.getString("name") + "\"}");
-                i++;
+                
             }
         } catch (Exception e) {
             e.printStackTrace();

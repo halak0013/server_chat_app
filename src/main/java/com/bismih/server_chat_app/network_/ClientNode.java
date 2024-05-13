@@ -10,7 +10,7 @@ public class ClientNode {
     public DataInputStream sInput;
     public DataOutputStream sOutput;
     public boolean client_status = true;
-    public String id;
+    public int user_id;
 
     public ClientNode(Socket socket) {
         this.socket = socket;

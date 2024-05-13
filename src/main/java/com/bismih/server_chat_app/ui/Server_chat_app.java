@@ -20,7 +20,8 @@ public class Server_chat_app {
         //Db_proccess.addMsg("Nasılsın", "text", r, s, 1);
         //Db_proccess.addMsg("Elhamdülillah, sen nasılsın", "text", s, r, 1);
         //System.out.println(Db_proccess.getMsgs(1, r, s));
-        System.out.println(Db_process.getProjects(3));
+        
+        System.out.println(Db_process.getUsers(1));
         db_helper.closeConnection();
     }
 }

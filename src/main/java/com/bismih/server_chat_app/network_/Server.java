@@ -3,6 +3,7 @@ package com.bismih.server_chat_app.network_;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Queue;
 
 import com.bismih.server_chat_app.utils.JsonProcessor;
 
@@ -64,21 +65,41 @@ public class Server {
                     client.client_status = false;
                     client.socket.close();
                     clients.remove(client);
-                    break;//!
+                    break;// !
                 }
                 result = JsonProcessor.parse(msg);
-                send_msg(result, client);
+                if (JsonProcessor.is_send_msg(result))
+                    send_messages_to_users(msg, client, result);
+                else
+                    send_msg(result, client);
                 System.out.println("server listen: "+msg);
             }
         } catch (Exception e) {
             System.err.println(e);
+            e.printStackTrace();
         }
+    }
+
+    private void send_messages_to_users(String msg, ClientNode client, String result) {
+        int receiver = JsonProcessor.get_receiver(msg);
+        System.out.println("msg: " + msg + " result: " + result);
+        if (receiver == -1) {
+            Queue<Integer> queue = JsonProcessor.get_users(msg);
+            for (int i = 0; i < clients.size(); i++) {
+                if (queue.contains(clients.get(i).user_id)) {
+                    send_msg(result, clients.get(i));
+                }
+            }
+        } else {
+            send_msg(result, client);
+        }
+        System.out.println("server listen aranan nokta: " + msg + " result: " + result);
     }
 
     public void send_msg(String msg, ClientNode client) {
         try {
             client.sOutput.writeUTF(msg);
-            System.out.println("server send: "+msg);
+            System.out.println("server send: " + msg);
         } catch (Exception e) {
             System.err.println(e);
         }

@@ -1,5 +1,9 @@
 package com.bismih.server_chat_app.utils;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class JsonProcessor{
@@ -131,6 +135,32 @@ public class JsonProcessor{
             default:
                 return "null";
         }
+    }
+
+    public static Queue<Integer> get_users(String json){
+        System.out.println("get_users: "+json);
+        Queue<Integer> result = new LinkedList<>();
+        JSONObject jObj = new JSONObject(json);
+        int project_id = jObj.getInt("project_id");
+        JSONArray jArr = new JSONArray(Db_process.getUsers(project_id));
+        
+        for (int i = 0; i < jArr.length(); i++) {
+            JSONObject jObj2 = jArr.getJSONObject(i);
+            int user_id = jObj2.getInt("user_id");
+            result.add(user_id);
+        }
+        return result;
+    }
+
+    public static int get_receiver(String json){
+        System.out.println("get_receiver: "+json);
+        JSONObject jObj = new JSONObject(json);
+        return jObj.getInt("receiver_id");
+    }
+
+    public static boolean is_send_msg(String json){
+        JSONObject jObj = new JSONObject(json);
+        return jObj.getString("code").equals("send_msg");
     }
 
 
