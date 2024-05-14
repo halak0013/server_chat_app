@@ -40,7 +40,7 @@ public class Db_process {
         String result = "";
         db_helper.start_connection();
         try {
-            db_helper.add_row("user", new String[] { s.PROJECT_NAME, "user_name", "password" },
+            db_helper.add_row("user", new String[] { s.PROJECT_NAME, s.USER_NAME, "password" },
                     new String[] { name, user_name, password });
             result = "success";
         } catch (SQLiteException e) {
@@ -84,7 +84,7 @@ public class Db_process {
         String result = "";
         db_helper.start_connection();
         try {
-            db_helper.add_row("user_project", new String[] { "user_id", "project_id" },
+            db_helper.add_row("user_project", new String[] { s.USER_ID, s.PROJECT_ID },
                     new String[] { Integer.toString(user_id), Integer.toString(project_id) });
             result = "success";
         } catch (SQLException e) {
@@ -107,7 +107,7 @@ public class Db_process {
         db_helper.start_connection();
         String result = "";
         try {
-            db_helper.add_row("messages", new String[] { "msg", "receiver_id", "sender_id", "project_id" },
+            db_helper.add_row("messages", new String[] { "msg", s.RECEIVER_ID, s.SENDER_ID, s.PROJECT_ID },
                     new String[][] { { convert_json(msg, type), "0" }, { Integer.toString(receiver_id), "1" },
                             { Integer.toString(sender_id), "1" },
                             { Integer.toString(project_id), "1" } });
@@ -144,16 +144,16 @@ public class Db_process {
                 jTmp = new JSONObject();
                 // id = Integer.toString(i);
                 msg = rs.getString("msg");
-                receiver = rs.getString("receiver_id");
-                sender = rs.getString("sender_id");
+                receiver = rs.getString(s.RECEIVER_ID);
+                sender = rs.getString(s.SENDER_ID);
                 jTmp.put("msg", msg);
-                jTmp.put("receiver_id", receiver);
-                jTmp.put("sender_id", sender);
+                jTmp.put(s.RECEIVER_ID, receiver);
+                jTmp.put(s.SENDER_ID, sender);
                 jArr.put(jTmp);
                 // jObj.put(Integer.toString(i), "{\"msg\":\"" + rs.getString("msg") +
                 // "\",\"receiver\":\""
-                // + rs.getString("receiver_id") + "\",\"sender\":\"" +
-                // rs.getString("sender_id") + "\"}");
+                // + rs.getString(s.RECEIVER_ID) + "\",\"sender\":\"" +
+                // rs.getString(s.SENDER_ID) + "\"}");
                 i++;
             }
         } catch (Exception e) {
@@ -182,18 +182,18 @@ public class Db_process {
             while (rs.next()) {
                 // id = Integer.toString(i);
                 jTmp = new JSONObject();
-                project_id = rs.getString("project_id");
+                project_id = rs.getString(s.PROJECT_ID);
                 project_name = rs.getString(s.PROJECT_NAME);
                 link = rs.getString("link");
                 admin = rs.getInt("admin");
                 System.out.println("project_id: " + project_id + " name: " + project_name);
-                jTmp.put("project_id", project_id);
+                jTmp.put(s.PROJECT_ID, project_id);
                 jTmp.put(s.PROJECT_NAME, project_name);
                 jTmp.put("link", link);
                 jTmp.put("admin", admin);
                 jArr.put(jTmp);
                 // jObj.put(Integer.toString(i), "{\"project_id\":\"" +
-                // rs.getString("project_id") +
+                // rs.getString(s.PROJECT_ID) +
                 // "\", \"name\":\"" + rs.getString(s.PROJECT_NAME) + "\"}");
                 // i++;
             }
@@ -219,14 +219,14 @@ public class Db_process {
         try {
             while (rs.next()) {
                 jTmp = new JSONObject();
-                user_id = rs.getString("user_id");
+                user_id = rs.getString(s.USER_ID);
                 name = rs.getString(s.PROJECT_NAME);
-                user_name = rs.getString("user_name");
-                jTmp.put("user_id", user_id);
+                user_name = rs.getString(s.USER_NAME);
+                jTmp.put(s.USER_ID, user_id);
                 jTmp.put("name", name);
-                jTmp.put("user_name", user_name);
+                jTmp.put(s.USER_NAME, user_name);
                 jArr.put(jTmp);
-                // jObj.put(Integer.toString(i), "{\"user_id\":\"" + rs.getString("user_id") +
+                // jObj.put(Integer.toString(i), "{\"user_id\":\"" + rs.getString(s.USER_ID) +
                 // "\", \"name\":\"" + rs.getString(s.PROJECT_NAME) + "\"}");
                 
             }

@@ -49,7 +49,7 @@ public class Project {
         String name, link;
         for (int i = 0; i < jArr.length(); i++) {
             jObj2 = jArr.getJSONObject(i);
-            project_id = jObj2.getInt("project_id");
+            project_id = jObj2.getInt(s.PROJECT_ID);
             name = jObj2.getString("name");
             link = jObj2.getString(s.PROJECT_NAME);
             admin = jObj2.getInt("admin");

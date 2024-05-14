@@ -72,8 +72,8 @@ public class MainApp extends javax.swing.JFrame {
             for (int i = 0; i < jArr.length(); i++) {
                 JSONObject jObj2 = jArr.getJSONObject(i);
                 String message = jObj2.getString("msg");
-                int sender_id = jObj2.getInt("sender_id");
-                int receiver_id = jObj2.getInt("receiver_id");
+                int sender_id = jObj2.getInt(s.SENDER_ID);
+                int receiver_id = jObj2.getInt(s.RECEIVER_ID);
                 String a = new JSONObject(message).getString("msg");
                 pnl_messages_s
                         .add(new JLabel("sender_id: " + sender_id + " receiver_id: " + receiver_id + " msg: " + a));
@@ -90,8 +90,8 @@ public class MainApp extends javax.swing.JFrame {
         ButtonN btn;
         String project_name;
         for (int i = 0; i < jArr.length(); i++) {
-            project_name = jArr.getJSONObject(i).getString("project_name");
-            int project_id = jArr.getJSONObject(i).getInt("project_id");
+            project_name = jArr.getJSONObject(i).getString(s.PROJECT_NAME);
+            int project_id = jArr.getJSONObject(i).getInt(s.PROJECT_ID);
 
             // projeler için buton ekleme
             btn = new ButtonN();

@@ -7,6 +7,7 @@ import java.util.Queue;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.bismih.server_chat_app.constants.s;
 import com.bismih.server_chat_app.utils.Db_process;
 
 public class User {
@@ -45,8 +46,8 @@ public class User {
         String user_name, name;
         for (int i = 0; i < jArr.length(); i++) {
             jObj2 = jArr.getJSONObject(i);
-            user_id = jObj2.getInt("user_id");
-            user_name = jObj2.getString("user_name");
+            user_id = jObj2.getInt(s.USER_ID);
+            user_name = jObj2.getString(s.USER_NAME);
             name = jObj2.getString("name");
 
             result.add(new User(user_id, name, user_name));

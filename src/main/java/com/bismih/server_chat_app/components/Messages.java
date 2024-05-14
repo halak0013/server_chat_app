@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.bismih.server_chat_app.constants.s;
 import com.bismih.server_chat_app.utils.Db_process;
 
 public class Messages {
@@ -55,8 +56,8 @@ public class Messages {
         for (int i = 0; i < jArr.length(); i++) {
             jObj2 = jArr.getJSONObject(i);
             msg_id = jObj2.getInt("msg_id");
-            sender_id = jObj2.getInt("sender_id");
-            receiver_id = jObj2.getInt("receiver_id");
+            sender_id = jObj2.getInt(s.SENDER_ID);
+            receiver_id = jObj2.getInt(s.RECEIVER_ID);
             msg = jObj2.getString("msg");
             result.add(new Messages(msg_id, sender_id, receiver_id, project_id, msg));
         }
