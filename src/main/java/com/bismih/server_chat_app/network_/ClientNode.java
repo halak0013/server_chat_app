@@ -19,6 +19,7 @@ public class ClientNode {
             sOutput = new DataOutputStream(socket.getOutputStream());
         } catch (Exception e) {
             System.err.println(e);
+            e.printStackTrace();
         }
     }
 }

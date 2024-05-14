@@ -4,20 +4,22 @@
  */
 package com.bismih.server_chat_app.ui;
 
-import java.awt.event.ActionListener;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.EnumMap;
+
+import com.bismih.server_chat_app.components.Request;
+import com.bismih.server_chat_app.constants.s;
 import com.bismih.server_chat_app.network_.Client;
 import com.bismih.server_chat_app.utils.JsonProcessor;
 import com.bismih.server_chat_app.view.buttons.ButtonN;
-import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDeepOceanIJTheme;
-
-import netscape.javascript.JSObject;
 
 /**
  *
@@ -25,88 +27,89 @@ import netscape.javascript.JSObject;
  */
 public class MainApp extends javax.swing.JFrame {
 
-    private static Client client;
     private static JFrame frame;
-    private static javax.swing.JPanel pnl_left1;
-    private static javax.swing.JPanel scrl_msg_s;
+    private static Client client;
     private static int user_id;
+    private static JPanel pnl_elements_s;
+    private static JPanel pnl_messages_s;
     private static int project_id_global;
+    private boolean is_in_project = true;
 
-    // TODO: sürekli yeni mesaj varmı kontrolü
-    // yapan bir fonksiyon theradi ekle
+    enum State {
+        PROJECT, MSG
+    };
+
     public MainApp(int id) {
         initComponents();
+
+        pnl_elements_s = pnl_elements;
+        pnl_messages_s = pnl_messages;
+        lb_id.setText("id: " + id);
         user_id = id;
-        addElements();
+        frame = this;
+
         configuration();
     }
-    
-    private void addElements() {
-        pnl_left1 = pnl_left;
-        scrl_msg_s = pnl_msg;
 
-        //panel içindeki butonun eventini tetikleyen fonksiyon
-        send_panel.get_btn_send().addActionListener((ActionListener) new ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                String msg = send_panel.get_tx_msg().getText();
-                client.send(JsonProcessor.send_msg(msg, "text", -1, user_id, project_id_global));
-                System.out.println(msg);
-                send_panel.get_tx_msg().setText("");
-            }
-        });
-        
-    }
-
-    private void configuration() {
-        lb_id.setText(" id: " + user_id);
+    private static void configuration() {
         client = new Client(MainApp::communication);
         client.start_client();
         client.send(JsonProcessor.get_project(user_id));
+
     }
 
     private static void communication(String msg) {
-        System.out.println("MainApp communication:\n" + msg);
-        JSONObject jObj = new JSONObject(msg);
-        String code = jObj.getString("code");
-        String result = jObj.getString("result");
-        System.out.println("code: " + code + " result: " + result);
+        System.out.println("MainApp communication: 60\n" + msg);
+        Request request = Request.getRequest(msg);
 
-        JSONArray jArr;
-        if (code.equals("get_project")) {
-            jArr = new JSONArray(result);
-            ButtonN buttonN;
-            for (int i = 0; i < jArr.length(); i++) {
-                JSONObject jObj2 = jArr.getJSONObject(i);
-                buttonN = new ButtonN();
-                String project_name = jObj2.getString("name");
-                int project_id = jObj2.getInt("project_id");
-                // buttonN.privateText = new int[] { project_id, -1, user_id};
-                
-                buttonN.setText("proje: "+project_id + " " + project_name);
-                buttonN.addActionListener((ActionListener) new ActionListener() {
-                    @Override
-                    public void actionPerformed(java.awt.event.ActionEvent e) {
-                        client.send(JsonProcessor.get_msg(project_id, -1, user_id));
-                        scrl_msg_s.removeAll();
-                        System.out.println("mesajlar temizlendi");
-                        project_id_global = project_id;
-                    }
-                });
-
-                pnl_left1.add(buttonN);
-            }
-        } else if (code.equals("get_msg")) {
-            jArr = new JSONArray(result);
+        if (request.getCode().equals(s.GET_PROJECT)) {
+            JSONArray jArr = new JSONArray(request.getResult());
+            fill_elements(jArr);
+        } else if (request.getCode().equals(s.GET_MSG)) {
+            pnl_messages_s.removeAll();
+            frame.revalidate();
+            JSONArray jArr = new JSONArray(request.getResult());
             for (int i = 0; i < jArr.length(); i++) {
                 JSONObject jObj2 = jArr.getJSONObject(i);
                 String message = jObj2.getString("msg");
                 int sender_id = jObj2.getInt("sender_id");
                 int receiver_id = jObj2.getInt("receiver_id");
-                String a =  new JSONObject(message).getString("msg");
-                scrl_msg_s.add(new JLabel("sender_id: " + sender_id + " receiver_id: " + receiver_id + " msg: " + a));
-                System.out.println("main app get_msg"+"sender_id: " + sender_id + " receiver_id: " + receiver_id + " msg: " + message);
+                String a = new JSONObject(message).getString("msg");
+                pnl_messages_s
+                        .add(new JLabel("sender_id: " + sender_id + " receiver_id: " + receiver_id + " msg: " + a));
+                System.out.println("main app get_msg" + "sender_id: " + sender_id + " receiver_id: " + receiver_id
+                        + " msg: " + message);
+                System.out.println(jArr.getJSONObject(i).getString("msg"));
             }
+        }
+        frame.revalidate();
+        frame.repaint();
+    }
+
+    private static void fill_elements(JSONArray jArr) {
+        ButtonN btn;
+        String project_name;
+        for (int i = 0; i < jArr.length(); i++) {
+            project_name = jArr.getJSONObject(i).getString("project_name");
+            int project_id = jArr.getJSONObject(i).getInt("project_id");
+
+            // projeler için buton ekleme
+            btn = new ButtonN();
+            btn.setText(project_name + " " + project_id);
+            System.out.println(project_name + " " + project_id);
+
+            // butonlara tıklanınca mesajları getirme
+            btn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    pnl_messages_s.removeAll();
+                    client.send(JsonProcessor.get_msg(project_id, -1, user_id));
+                    System.out.println("mesajlar temizlendi");
+                    project_id_global = project_id;
+                }
+
+            });
+            pnl_elements_s.add(btn);
         }
 
     }
@@ -118,50 +121,139 @@ public class MainApp extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jSplitPane1 = new javax.swing.JSplitPane();
-        pnl_left = new javax.swing.JPanel();
+        pnl_messages = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
+        lb_project_name = new javax.swing.JLabel();
+        pnl_elements_ = new javax.swing.JPanel();
+        pnl_top_id_back = new javax.swing.JPanel();
+        btn_back = new com.bismih.server_chat_app.view.buttons.ButtonN();
         lb_id = new javax.swing.JLabel();
-        pnl_right = new javax.swing.JPanel();
-        scrl_msg = new javax.swing.JScrollPane();
-        pnl_msg = new javax.swing.JPanel();
-        send_panel = new com.bismih.server_chat_app.view.TextField.send_panel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        pnl_elements = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.LINE_AXIS));
+        setTitle("Main App");
+        setBackground(new java.awt.Color(204, 255, 204));
 
-        pnl_left.setBackground(new java.awt.Color(204, 255, 255));
-        pnl_left.setPreferredSize(new java.awt.Dimension(100, 300));
-        pnl_left.setLayout(new javax.swing.BoxLayout(pnl_left, javax.swing.BoxLayout.Y_AXIS));
+        pnl_messages.setBackground(new java.awt.Color(153, 255, 153));
+        pnl_messages.setPreferredSize(new java.awt.Dimension(300, 426));
 
-        lb_id.setText("id:");
-        pnl_left.add(lb_id);
+        lb_project_name.setText("Grup_ismi");
+        lb_project_name.setToolTipText("");
 
-        jSplitPane1.setLeftComponent(pnl_left);
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(lb_project_name)
+                                .addContainerGap(238, Short.MAX_VALUE)));
+        jPanel1Layout.setVerticalGroup(
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(14, 14, 14)
+                                .addComponent(lb_project_name)
+                                .addContainerGap(16, Short.MAX_VALUE)));
 
-        pnl_right.setBackground(new java.awt.Color(204, 255, 204));
-        pnl_right.setPreferredSize(new java.awt.Dimension(500, 300));
-        pnl_right.setLayout(new javax.swing.BoxLayout(pnl_right, javax.swing.BoxLayout.Y_AXIS));
+        javax.swing.GroupLayout pnl_messagesLayout = new javax.swing.GroupLayout(pnl_messages);
+        pnl_messages.setLayout(pnl_messagesLayout);
+        pnl_messagesLayout.setHorizontalGroup(
+                pnl_messagesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_messagesLayout.createSequentialGroup()
+                                .addGap(0, 0, 0)
+                                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(0, 0, 0)));
+        pnl_messagesLayout.setVerticalGroup(
+                pnl_messagesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(pnl_messagesLayout.createSequentialGroup()
+                                .addGap(0, 0, 0)
+                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
-        scrl_msg.setPreferredSize(new java.awt.Dimension(100, 300));
+        pnl_elements_.setBackground(new java.awt.Color(255, 255, 153));
+        pnl_elements_.setPreferredSize(new java.awt.Dimension(150, 450));
 
-        pnl_msg.setBackground(new java.awt.Color(255, 255, 153));
-        pnl_msg.setLayout(new javax.swing.BoxLayout(pnl_msg, javax.swing.BoxLayout.Y_AXIS));
-        scrl_msg.setViewportView(pnl_msg);
+        btn_back.setText("<");
+        btn_back.setFont(new java.awt.Font("Arial Black", 1, 13)); // NOI18N
+        btn_back.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_backActionPerformed(evt);
+            }
+        });
 
-        pnl_right.add(scrl_msg);
-        pnl_right.add(send_panel);
+        lb_id.setText("id: ");
 
-        jSplitPane1.setRightComponent(pnl_right);
+        javax.swing.GroupLayout pnl_top_id_backLayout = new javax.swing.GroupLayout(pnl_top_id_back);
+        pnl_top_id_back.setLayout(pnl_top_id_backLayout);
+        pnl_top_id_backLayout.setHorizontalGroup(
+                pnl_top_id_backLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(pnl_top_id_backLayout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addComponent(btn_back, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(15, 15, 15)
+                                .addComponent(lb_id, javax.swing.GroupLayout.PREFERRED_SIZE, 56,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(47, 47, 47)));
+        pnl_top_id_backLayout.setVerticalGroup(
+                pnl_top_id_backLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(pnl_top_id_backLayout.createSequentialGroup()
+                                .addGap(5, 5, 5)
+                                .addComponent(btn_back, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(pnl_top_id_backLayout.createSequentialGroup()
+                                .addGap(8, 8, 8)
+                                .addComponent(lb_id)));
 
-        getContentPane().add(jSplitPane1);
+        pnl_elements.setLayout(new javax.swing.BoxLayout(pnl_elements, javax.swing.BoxLayout.Y_AXIS));
+        jScrollPane1.setViewportView(pnl_elements);
+
+        javax.swing.GroupLayout pnl_elements_Layout = new javax.swing.GroupLayout(pnl_elements_);
+        pnl_elements_.setLayout(pnl_elements_Layout);
+        pnl_elements_Layout.setHorizontalGroup(
+                pnl_elements_Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(pnl_top_id_back, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(pnl_elements_Layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addComponent(jScrollPane1)));
+        pnl_elements_Layout.setVerticalGroup(
+                pnl_elements_Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(pnl_elements_Layout.createSequentialGroup()
+                                .addGap(0, 0, 0)
+                                .addComponent(pnl_top_id_back, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(10, 10, 10)
+                                .addComponent(jScrollPane1)
+                                .addGap(2, 2, 2)));
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(pnl_elements_, javax.swing.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)
+                                .addGap(0, 0, 0)
+                                .addComponent(pnl_messages, javax.swing.GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
+                                .addGap(0, 0, 0)));
+        layout.setVerticalGroup(
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(pnl_elements_, javax.swing.GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)
+                        .addComponent(pnl_messages, javax.swing.GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE));
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btn_backActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btn_backActionPerformed
+
+    }// GEN-LAST:event_btn_backActionPerformed
 
     /**
      * @param args the command line arguments
@@ -197,8 +289,6 @@ public class MainApp extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                // [60,63,65]
-                FlatMaterialDeepOceanIJTheme.setup();
                 frame = new MainApp(3);
                 frame.setVisible(true);
             }
@@ -206,12 +296,14 @@ public class MainApp extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JSplitPane jSplitPane1;
+    private com.bismih.server_chat_app.view.buttons.ButtonN btn_back;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lb_id;
-    private javax.swing.JPanel pnl_left;
-    private javax.swing.JPanel pnl_msg;
-    private javax.swing.JPanel pnl_right;
-    private javax.swing.JScrollPane scrl_msg;
-    private com.bismih.server_chat_app.view.TextField.send_panel send_panel;
+    private javax.swing.JLabel lb_project_name;
+    private javax.swing.JPanel pnl_elements;
+    private javax.swing.JPanel pnl_elements_;
+    private javax.swing.JPanel pnl_messages;
+    private javax.swing.JPanel pnl_top_id_back;
     // End of variables declaration//GEN-END:variables
 }

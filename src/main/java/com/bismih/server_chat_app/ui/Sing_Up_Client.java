@@ -7,8 +7,9 @@ package com.bismih.server_chat_app.ui;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import org.json.JSONObject;
 
+import com.bismih.server_chat_app.components.Request;
+import com.bismih.server_chat_app.constants.s;
 import com.bismih.server_chat_app.network_.Client;
 import com.bismih.server_chat_app.utils.JsonProcessor;
 import com.formdev.flatlaf.intellijthemes.FlatArcDarkOrangeIJTheme;
@@ -30,21 +31,19 @@ public class Sing_Up_Client extends javax.swing.JFrame {
     }
 
     private static void sign_up(String msg) {
-        System.out.println(msg);
-        JSONObject jObj = new JSONObject(msg);
-        String code = jObj.getString("code");
-        String result = jObj.getString("result");
-        System.out.println("code: " + code + " result: " + result);
-        if (code.equals("sign_up")) {
-            if (result.equals("success")) {
+        Request request = Request.getRequest(msg);
+
+        if (request.getCode().equals(s.SIGN_UP)) {
+            if (request.getResult().equals("success")) {
                 JFrame login_client = new Login_Client();
                 login_client.setVisible(true);
                 client.disconnect();
                 frame.dispose();
-            } else if (result.equals("same_user")) {
+            } else if (request.getResult().equals("same_user")) {
                 JOptionPane.showMessageDialog(frame, "Error: User already exists!");
             }
         }
+
     }
 
     /**

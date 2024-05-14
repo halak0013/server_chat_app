@@ -5,6 +5,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Queue;
 
+import com.bismih.server_chat_app.components.Request;
+import com.bismih.server_chat_app.constants.s;
 import com.bismih.server_chat_app.utils.JsonProcessor;
 
 public class Server {
@@ -34,6 +36,7 @@ public class Server {
             return true;
         } catch (Exception e) {
             System.err.println(e);
+            e.printStackTrace();
             return false;
         }
     }
@@ -52,27 +55,29 @@ public class Server {
             t_listen.start();
         } catch (Exception e) {
             System.err.println(e);
+            e.printStackTrace();
         }
     }
 
     public void listen(ClientNode client) {
         try {
             String msg;
-            String result;
+            Request result;
             while (client.client_status) {
                 msg = client.sInput.readUTF();
-                if (msg.equals("exit")) {
+                System.out.println("server listen: 67" + msg);
+                result = JsonProcessor.parse(msg);
+                if (result.getCode().equals("exit")) {
                     client.client_status = false;
                     client.socket.close();
                     clients.remove(client);
                     break;// !
                 }
-                result = JsonProcessor.parse(msg);
-                if (JsonProcessor.is_send_msg(result))
-                    send_messages_to_users(msg, client, result);
+                if (result.getCode().equals(s.SEND_MSG))
+                    send_messages_to_users(client, result, msg);
                 else
-                    send_msg(result, client);
-                System.out.println("server listen: "+msg);
+                    send_msg(Request.getJsonRequest(result), client);
+                System.out.println("server listen: " + msg);
             }
         } catch (Exception e) {
             System.err.println(e);
@@ -80,18 +85,18 @@ public class Server {
         }
     }
 
-    private void send_messages_to_users(String msg, ClientNode client, String result) {
+    private void send_messages_to_users(ClientNode client, Request result, String msg) {
         int receiver = JsonProcessor.get_receiver(msg);
         System.out.println("msg: " + msg + " result: " + result);
         if (receiver == -1) {
             Queue<Integer> queue = JsonProcessor.get_users(msg);
             for (int i = 0; i < clients.size(); i++) {
                 if (queue.contains(clients.get(i).user_id)) {
-                    send_msg(result, clients.get(i));
+                    send_msg(Request.getJsonRequest(result), clients.get(i));
                 }
             }
         } else {
-            send_msg(result, client);
+            send_msg(Request.getJsonRequest(result), client);
         }
         System.out.println("server listen aranan nokta: " + msg + " result: " + result);
     }
@@ -102,6 +107,7 @@ public class Server {
             System.out.println("server send: " + msg);
         } catch (Exception e) {
             System.err.println(e);
+            e.printStackTrace();
         }
     }
 

@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.util.function.Consumer;
 
 import com.bismih.server_chat_app.constants.Constants;
+import com.bismih.server_chat_app.utils.JsonProcessor;
 
 public class Client {
     // listen içine bir tane runnable func alcak
@@ -56,6 +57,7 @@ public class Client {
                         ui_worker.accept(msg);
                     } catch (Exception e) {
                         System.out.println("Error listening to server:" + e);
+                        e.printStackTrace();
                         break;
                     }
                 }
@@ -70,12 +72,13 @@ public class Client {
             sOutput.writeUTF(msg);
         } catch (Exception e) {
             System.out.println("Error sending to server:" + e);
+            e.printStackTrace();
         }
     }
 
     public void disconnect() {
         try {
-            this.send("**exit**");
+            this.send(JsonProcessor.exit());
             if (sInput != null)
                 sInput.close();
             if (sOutput != null)
@@ -85,6 +88,7 @@ public class Client {
             client_status = false;
         } catch (Exception e) {
             System.err.println(e);
+            e.printStackTrace();
         }
     }
 }

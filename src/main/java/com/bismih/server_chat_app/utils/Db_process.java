@@ -8,6 +8,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.sqlite.SQLiteException;
 
+import com.bismih.server_chat_app.constants.s;
+
 public class Db_process {
     private static Db_helper db_helper = new Db_helper();
 
@@ -38,7 +40,7 @@ public class Db_process {
         String result = "";
         db_helper.start_connection();
         try {
-            db_helper.add_row("user", new String[] { "name", "user_name", "password" },
+            db_helper.add_row("user", new String[] { s.PROJECT_NAME, "user_name", "password" },
                     new String[] { name, user_name, password });
             result = "success";
         } catch (SQLiteException e) {
@@ -64,7 +66,7 @@ public class Db_process {
         String result = "";
         db_helper.start_connection();
         try {
-            db_helper.add_row("projects", new String[] { "name", "admin", "link" },
+            db_helper.add_row("projects", new String[] { s.PROJECT_NAME, "admin", "link" },
                     new String[] { project_name, Integer.toString(admin), project_link });
             result = "success";
         } catch (SQLException e) {
@@ -124,10 +126,13 @@ public class Db_process {
     // sender = receiver_id)) order by id desc
     public static String getMsgs(int project_id, int receiver_id, int sender_id) {
         db_helper.start_connection();
-        String query = "select id, msg, receiver_id, sender_id from messages where project_id = " + project_id
-                + " and ((receiver_id = " + receiver_id + " and sender_id = " + sender_id + ") or (receiver_id = "
-                + sender_id
-                + " and sender_id = " + receiver_id + ")) order by id desc";
+        String query = "select id, msg, receiver_id, sender_id from messages where project_id = " + project_id;
+        if (receiver_id != -1)
+            query +=" and ((receiver_id = " + receiver_id + " and sender_id = " + sender_id + ") or (receiver_id = "
+                + sender_id + " and sender_id = " + receiver_id + ")) order by id desc";
+        else
+            query += " order by id desc";
+        
         System.out.println(query);
         ResultSet rs = db_helper.get_query(query);
         JSONArray jArr = new JSONArray();
@@ -163,7 +168,7 @@ public class Db_process {
     public static String getProjects(int user_id) {
         db_helper.start_connection();
 
-        String query = "select project_id, name from user_project, projects where user_project.project_id=projects.id and user_project.user_id = "
+        String query = "select project_id, project_name, admin, link from user_project, projects where user_project.project_id=projects.id and user_project.user_id = "
                 + user_id;
         System.out.println(query);
         ResultSet rs = db_helper.get_query(query);
@@ -171,21 +176,25 @@ public class Db_process {
         // JSONObject jObj = new JSONObject();
         JSONObject jTmp;
         JSONArray jArr = new JSONArray();
-        int i = 0;
-        String id, project_id, name;
+        String project_id, project_name, link;
+        int admin;
         try {
             while (rs.next()) {
                 // id = Integer.toString(i);
                 jTmp = new JSONObject();
                 project_id = rs.getString("project_id");
-                name = rs.getString("name");
-                System.out.println("project_id: " + project_id + " name: " + name);
+                project_name = rs.getString(s.PROJECT_NAME);
+                link = rs.getString("link");
+                admin = rs.getInt("admin");
+                System.out.println("project_id: " + project_id + " name: " + project_name);
                 jTmp.put("project_id", project_id);
-                jTmp.put("name", name);
+                jTmp.put(s.PROJECT_NAME, project_name);
+                jTmp.put("link", link);
+                jTmp.put("admin", admin);
                 jArr.put(jTmp);
                 // jObj.put(Integer.toString(i), "{\"project_id\":\"" +
                 // rs.getString("project_id") +
-                // "\", \"name\":\"" + rs.getString("name") + "\"}");
+                // "\", \"name\":\"" + rs.getString(s.PROJECT_NAME) + "\"}");
                 // i++;
             }
         } catch (Exception e) {
@@ -199,24 +208,26 @@ public class Db_process {
     /// projenin id ve ismini, user id ye göre getirir
     public static String getUsers(int project_id) {
         db_helper.start_connection();
-        String query = "select user_id, name from user_project, user where user_project.user_id=user.id and user_project.project_id = "
+        String query = "select user_id, name, user_name from user_project, user where user_project.user_id=user.id and user_project.project_id = "
                 + project_id;
         ResultSet rs = db_helper.get_query(query);
         System.out.println(query);
         JSONObject jTmp;
         JSONArray jArr = new JSONArray();
         int i = 0;
-        String id, user_id, name;
+        String id, user_id, name, user_name;
         try {
             while (rs.next()) {
                 jTmp = new JSONObject();
                 user_id = rs.getString("user_id");
-                name = rs.getString("name");
+                name = rs.getString(s.PROJECT_NAME);
+                user_name = rs.getString("user_name");
                 jTmp.put("user_id", user_id);
                 jTmp.put("name", name);
+                jTmp.put("user_name", user_name);
                 jArr.put(jTmp);
                 // jObj.put(Integer.toString(i), "{\"user_id\":\"" + rs.getString("user_id") +
-                // "\", \"name\":\"" + rs.getString("name") + "\"}");
+                // "\", \"name\":\"" + rs.getString(s.PROJECT_NAME) + "\"}");
                 
             }
         } catch (Exception e) {

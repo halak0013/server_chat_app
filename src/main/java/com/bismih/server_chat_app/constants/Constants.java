@@ -1,15 +1,11 @@
 package com.bismih.server_chat_app.constants;
 
-
 import java.awt.Color;
 
 public class Constants {
-    //private static Color color = new Color(250, 164, 1);
+    // private static Color color = new Color(250, 164, 1);
     public static String server_ip = "localhost";
     public static int server_port = 57145;
-
-
-
 
     private static Color color = new Color(141, 190, 223);
 
@@ -25,8 +21,6 @@ public class Constants {
         return new Color(70, 70, 70);
     }
 
-
-
     public static Color borderColor() {
         return color;
     }
@@ -35,7 +29,6 @@ public class Constants {
         return new Color(202, 202, 202);
     }
 
-    
     public static Color txNormalColor() {
         return new Color(244, 244, 244);
     }
@@ -43,11 +36,11 @@ public class Constants {
     public static Color txHintColor() {
         return new Color(244, 244, 244);
     }
-        public static Color txDarkColor() {
+
+    public static Color txDarkColor() {
         return new Color(24, 24, 24);
     }
 
-        
     public static Color panelFocusGain() {
         return color;
     }
