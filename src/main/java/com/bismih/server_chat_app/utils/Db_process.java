@@ -129,9 +129,10 @@ public class Db_process {
         String query = "select id, msg, receiver_id, sender_id from messages where project_id = " + project_id;
         if (receiver_id != -1)
             query +=" and ((receiver_id = " + receiver_id + " and sender_id = " + sender_id + ") or (receiver_id = "
-                + sender_id + " and sender_id = " + receiver_id + ")) order by id desc";
+                + sender_id + " and sender_id = " + receiver_id + "))";
         else
-            query += " order by id desc";
+            query += " and receiver_id = -1";
+        query += " order by id asc";
         
         System.out.println(query);
         ResultSet rs = db_helper.get_query(query);

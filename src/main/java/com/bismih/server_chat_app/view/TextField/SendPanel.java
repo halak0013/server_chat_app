@@ -10,10 +10,10 @@ import com.bismih.server_chat_app.view.buttons.ButtonN;
  *
  * @author bismih
  */
-public class send_panel extends javax.swing.JPanel {
+public class SendPanel extends javax.swing.JPanel {
 
     
-    public send_panel() {
+    public SendPanel() {
         initComponents();
     }
 
@@ -34,9 +34,9 @@ public class send_panel extends javax.swing.JPanel {
         tx_msg.setText("Mesajınızı yazınız");
         add(tx_msg);
 
-        btn_send.setText(">");
-        btn_send.setFont(new java.awt.Font("Arial Black", 1, 17)); // NOI18N
-        btn_send.setPreferredSize(new java.awt.Dimension(23, 23));
+        btn_send.setText(" > ");
+        btn_send.setFont(new java.awt.Font("Arial Black", 0, 13)); // NOI18N
+        btn_send.setPreferredSize(new java.awt.Dimension(50, 40));
         add(btn_send);
     }// </editor-fold>//GEN-END:initComponents
 
@@ -47,6 +47,14 @@ public class send_panel extends javax.swing.JPanel {
     
     public TextFeild1 get_tx_msg(){
         return tx_msg;
+    }
+
+    public void clear(){
+        tx_msg.setText("");
+    }
+
+    public String get_msg(){
+        return tx_msg.getText();
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -35,4 +35,20 @@ public class Request {
         return result;
     }
 
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Request{" +
+                "code='" + code + '\'' +
+                ", result='" + result + '\'' +
+                '}';
+    }
 }

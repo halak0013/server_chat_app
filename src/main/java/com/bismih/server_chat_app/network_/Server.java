@@ -1,5 +1,6 @@
 package com.bismih.server_chat_app.network_;
 
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -46,12 +47,7 @@ public class Server {
             clientSocket = serverSocket.accept();
             ClientNode client = new ClientNode(clientSocket);
             clients.add(client);
-            Thread t_listen = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    listen(client);
-                }
-            });
+            Thread t_listen = new Thread(() -> listen(client));
             t_listen.start();
         } catch (Exception e) {
             System.err.println(e);
@@ -72,7 +68,10 @@ public class Server {
                     client.socket.close();
                     clients.remove(client);
                     break;// !
-                }
+                }else if (result.getCode().equals("set_id"))
+                    client.user_id = Integer.parseInt(result.getResult());
+
+                System.out.println("\n\n*"+ msg +"*\n\n");
                 if (result.getCode().equals(s.SEND_MSG))
                     send_messages_to_users(client, result, msg);
                 else
@@ -80,6 +79,13 @@ public class Server {
                 System.out.println("server listen: " + msg);
             }
         } catch (Exception e) {
+            client.client_status = false;
+            try {
+                client.socket.close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+            clients.remove(client);
             System.err.println(e);
             e.printStackTrace();
         }
@@ -87,16 +93,30 @@ public class Server {
 
     private void send_messages_to_users(ClientNode client, Request result, String msg) {
         int receiver = JsonProcessor.get_receiver(msg);
-        System.out.println("msg: " + msg + " result: " + result);
+        System.out.println("\n\n msg: " + msg + " result: " + result+"\n\n");
+        Request new_result = result;
+        new_result.setCode("new_msg");
+        new_result.setResult(msg);
+        ArrayList<Integer> user_list = JsonProcessor.get_users(msg);
         if (receiver == -1) {
-            Queue<Integer> queue = JsonProcessor.get_users(msg);
             for (int i = 0; i < clients.size(); i++) {
-                if (queue.contains(clients.get(i).user_id)) {
+                int user_id = clients.get(i).user_id;
+                System.out.println("***********" + user_id + "***********");
+                if (user_list.contains(user_id)) {
                     send_msg(Request.getJsonRequest(result), clients.get(i));
+                    System.out.println("sunucu mesaj gonderildi: " + clients.get(i).user_id);
                 }
             }
         } else {
-            send_msg(Request.getJsonRequest(result), client);
+            //send_msg(Request.getJsonRequest(result), client);
+            for (int i = 0; i < clients.size(); i++) {
+                int user_id = clients.get(i).user_id;
+                System.out.println("***********" + user_id + "***********");
+                if (user_list.contains(receiver)) {
+                    System.out.println("sunucu mesaj gonderildi: " + clients.get(i).user_id);
+                    send_msg(Request.getJsonRequest(result), clients.get(i));
+                }
+            }
         }
         System.out.println("server listen aranan nokta: " + msg + " result: " + result);
     }

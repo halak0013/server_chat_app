@@ -1,5 +1,6 @@
 package com.bismih.server_chat_app.utils;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -80,6 +81,13 @@ public class JsonProcessor {
         return jObj.toString();
     }
 
+    public static String set_id(int user_id) {
+        JSONObject jObj = new JSONObject();
+        jObj.put("code", "set_id");
+        jObj.put("user_id", user_id);
+        return jObj.toString();
+    }
+
     public static String exit() {
         JSONObject jObj = new JSONObject();
         jObj.put("code", "exit");
@@ -138,6 +146,10 @@ public class JsonProcessor {
                     project_id = jObj.getInt(s.PROJECT_ID);
                     request = new Request(s.JOIN_PROJECT, Db_process.add_user_project_relation(user_id, project_id));
                     break;
+                case "set_id":
+                    user_id = jObj.getInt("user_id");
+                    request = new Request("set_id", user_id + "");
+                    break;
                 case "exit":
                     request = new Request("exit", "exit");
                     break;
@@ -158,9 +170,9 @@ public class JsonProcessor {
         return jObj.toString();
     }
 
-    public static Queue<Integer> get_users(String json) {
+    public static ArrayList<Integer> get_users(String json) {
         System.out.println("get_users: json procces " + json);
-        Queue<Integer> result = new LinkedList<>();
+        ArrayList<Integer> result = new ArrayList<>();
         JSONObject jObj = new JSONObject(json);
         int project_id = jObj.getInt(s.PROJECT_ID);
         JSONArray jArr = new JSONArray(Db_process.getUsers(project_id));
@@ -172,7 +184,6 @@ public class JsonProcessor {
         }
         return result;
     }
-
 
     public static int get_receiver(String json) {
         System.out.println("get_receiver: " + json);

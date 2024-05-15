@@ -7,7 +7,6 @@ import org.json.JSONObject;
 
 import com.bismih.server_chat_app.constants.s;
 
-
 public class Messages {
     private int msg_id;
     private int sender_id;
@@ -71,6 +70,12 @@ public class Messages {
             result.add(new Messages(msg_id, sender_id, receiver_id, project_id, msg, type));
         }
         return result;
+    }
+
+    public static Messages get_message(String json) {
+        JSONObject jObj = new JSONObject(json);
+        return new Messages(-1, jObj.getInt(s.SENDER_ID), jObj.getInt(s.RECEIVER_ID),
+                jObj.getInt(s.PROJECT_ID), jObj.getString("msg"), jObj.getString("type"));
     }
 
 }
