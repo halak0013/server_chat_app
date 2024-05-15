@@ -11,7 +11,6 @@ public class s {
     public static final String JOIN_PROJECT = "join_project";
     public static final String GET_PROJECTS = "get_projects";
     public static final String GET_USERS = "get_users";
-    public static final String GET_USER = "get_user";
 
     public static final String PROJECT_NAME = "project_name";
     public static final String USER_NAME = "user_name";
@@ -19,4 +18,5 @@ public class s {
     public static final String USER_ID = "user_id";
     public static final String RECEIVER_ID = "receiver_id";
     public static final String SENDER_ID = "sender_id";
+    public static final String MSG_ID = "msg_id";
 }

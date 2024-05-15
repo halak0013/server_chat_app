@@ -137,24 +137,20 @@ public class Db_process {
         ResultSet rs = db_helper.get_query(query);
         JSONArray jArr = new JSONArray();
         JSONObject jTmp;
-        int i = 0;
-        String id, msg, receiver, sender;
+        String msg, receiver, sender;
+        int id;
         try {
             while (rs.next()) {
                 jTmp = new JSONObject();
-                // id = Integer.toString(i);
+                id = rs.getInt("id");
                 msg = rs.getString("msg");
                 receiver = rs.getString(s.RECEIVER_ID);
                 sender = rs.getString(s.SENDER_ID);
+                jTmp.put(s.MSG_ID, id);
                 jTmp.put("msg", msg);
                 jTmp.put(s.RECEIVER_ID, receiver);
                 jTmp.put(s.SENDER_ID, sender);
                 jArr.put(jTmp);
-                // jObj.put(Integer.toString(i), "{\"msg\":\"" + rs.getString("msg") +
-                // "\",\"receiver\":\""
-                // + rs.getString(s.RECEIVER_ID) + "\",\"sender\":\"" +
-                // rs.getString(s.SENDER_ID) + "\"}");
-                i++;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -214,13 +210,12 @@ public class Db_process {
         System.out.println(query);
         JSONObject jTmp;
         JSONArray jArr = new JSONArray();
-        int i = 0;
-        String id, user_id, name, user_name;
+        String user_id, name, user_name;
         try {
             while (rs.next()) {
                 jTmp = new JSONObject();
                 user_id = rs.getString(s.USER_ID);
-                name = rs.getString(s.PROJECT_NAME);
+                name = rs.getString("name");
                 user_name = rs.getString(s.USER_NAME);
                 jTmp.put(s.USER_ID, user_id);
                 jTmp.put("name", name);

@@ -41,17 +41,17 @@ public class Project {
         return new Project(project_id, name, admin, link);
     }
 
-    public static ArrayList<Project> getProjects(int user_id) {
+    public static ArrayList<Project> getProjects(String json) {
         ArrayList<Project> result = new ArrayList<>();
-        JSONArray jArr = new JSONArray(Db_process.getProjects(user_id));
+        JSONArray jArr = new JSONArray(json);
         JSONObject jObj2;
         int project_id, admin;
         String name, link;
         for (int i = 0; i < jArr.length(); i++) {
             jObj2 = jArr.getJSONObject(i);
             project_id = jObj2.getInt(s.PROJECT_ID);
-            name = jObj2.getString("name");
-            link = jObj2.getString(s.PROJECT_NAME);
+            name = jObj2.getString(s.PROJECT_NAME);
+            link = jObj2.getString("link");
             admin = jObj2.getInt("admin");
 
             result.add(Project.generate_project(project_id, name, admin, link));

@@ -6,21 +6,22 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.bismih.server_chat_app.constants.s;
-import com.bismih.server_chat_app.utils.Db_process;
+
 
 public class Messages {
     private int msg_id;
     private int sender_id;
     private int receiver_id;
     private int project_id;
-    private String msg;
+    private String msg, type;
 
-    private Messages(int msg_id, int sender_id, int receiver_id, int project_id, String msg) {
+    private Messages(int msg_id, int sender_id, int receiver_id, int project_id, String msg, String type) {
         this.msg_id = msg_id;
         this.sender_id = sender_id;
         this.receiver_id = receiver_id;
         this.project_id = project_id;
         this.msg = msg;
+        this.type = type;
     }
 
     public int getMsg_id() {
@@ -43,23 +44,31 @@ public class Messages {
         return msg;
     }
 
-    public static Messages generate_message(int msg_id, int sender_id, int receiver_id, int project_id, String msg) {
-        return new Messages(msg_id, sender_id, receiver_id, project_id, msg);
+    public String getType() {
+        return type;
     }
 
-    public static ArrayList<Messages> getMessages(int project_id, int receiver_id, int sender_id) {
+    public static Messages generate_message(int msg_id, int sender_id, int receiver_id, int project_id, String msg,
+            String type) {
+        return new Messages(msg_id, sender_id, receiver_id, project_id, msg, type);
+    }
+
+    public static ArrayList<Messages> getMessages(String json, int project_id) {
         ArrayList<Messages> result = new ArrayList<>();
-        JSONArray jArr = new JSONArray(Db_process.getMsgs(project_id, receiver_id, sender_id));
+        JSONArray jArr = new JSONArray(json);
         JSONObject jObj2;
-        int msg_id;
-        String msg;
+        int msg_id, receiver_id, sender_id;
+        String msg, type;
         for (int i = 0; i < jArr.length(); i++) {
             jObj2 = jArr.getJSONObject(i);
-            msg_id = jObj2.getInt("msg_id");
+            msg_id = jObj2.getInt(s.MSG_ID);
             sender_id = jObj2.getInt(s.SENDER_ID);
             receiver_id = jObj2.getInt(s.RECEIVER_ID);
             msg = jObj2.getString("msg");
-            result.add(new Messages(msg_id, sender_id, receiver_id, project_id, msg));
+            jObj2 = new JSONObject(msg);
+            msg = jObj2.getString("msg");
+            type = jObj2.getString("type");
+            result.add(new Messages(msg_id, sender_id, receiver_id, project_id, msg, type));
         }
         return result;
     }

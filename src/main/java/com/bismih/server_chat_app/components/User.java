@@ -37,10 +37,10 @@ public class User {
         return new User(id, name, user_name);
     }
 
-    public static ArrayList<User> get_users(int project_id) {
+    public static ArrayList<User> get_users(String json) {
 
         ArrayList<User> result = new ArrayList<>();
-        JSONArray jArr = new JSONArray(Db_process.getUsers(project_id));
+        JSONArray jArr = new JSONArray(json);
         JSONObject jObj2;
         int user_id;
         String user_name, name;

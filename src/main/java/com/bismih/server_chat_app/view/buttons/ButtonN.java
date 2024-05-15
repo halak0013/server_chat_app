@@ -67,6 +67,12 @@ public class ButtonN extends JButton {
         });
     }
 
+    public static ButtonN getBtn(String text) {
+        ButtonN btn = new ButtonN();
+        btn.setText(text);
+        return btn;
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;

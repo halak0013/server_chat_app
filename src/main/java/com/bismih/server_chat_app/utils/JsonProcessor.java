@@ -49,6 +49,13 @@ public class JsonProcessor {
         return jObj.toString();
     }
 
+    public static String get_users(int project_id) {
+        JSONObject jObj = new JSONObject();
+        jObj.put("code", s.GET_USERS);
+        jObj.put(s.PROJECT_ID, project_id);
+        return jObj.toString();
+    }
+
     public static String get_project(int user_id) {
         JSONObject jObj = new JSONObject();
         jObj.put("code", s.GET_PROJECT);
@@ -103,6 +110,10 @@ public class JsonProcessor {
                     int receiver_id = jObj.getInt(s.RECEIVER_ID);
                     int sender_id = jObj.getInt(s.SENDER_ID);
                     request = new Request(s.GET_MSG, Db_process.getMsgs(project_id, receiver_id, sender_id));
+                    break;
+                case s.GET_USERS:
+                    project_id = jObj.getInt(s.PROJECT_ID);
+                    request = new Request(s.GET_USERS, Db_process.getUsers(project_id));
                     break;
                 case s.SEND_MSG:
                     String msg = jObj.getString("msg");
