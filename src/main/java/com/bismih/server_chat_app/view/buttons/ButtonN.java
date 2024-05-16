@@ -12,7 +12,7 @@ import javax.swing.JButton;
 
 import com.bismih.server_chat_app.constants.Constants;
 
-public class ButtonN extends JButton {
+public class ButtonN<T> extends JButton{
 
     private Color colorMain = Constants.btMainColor();
     private Color colorOver = Constants.btOverColor();
@@ -21,7 +21,7 @@ public class ButtonN extends JButton {
     private Color colorBorder = Constants.borderColor();
     private boolean over;
     private short radius = 25;
-    public int[] privateText;
+    public T privateInfo;
 
     public ButtonN() {
         super();
@@ -67,8 +67,8 @@ public class ButtonN extends JButton {
         });
     }
 
-    public static ButtonN getBtn(String text) {
-        ButtonN btn = new ButtonN();
+    public static <T> ButtonN<T> getBtn(String text) {
+        ButtonN<T> btn = new ButtonN<>();
         btn.setText(text);
         return btn;
     }

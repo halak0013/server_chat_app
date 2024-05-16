@@ -46,9 +46,6 @@ public class Request {
 
     @Override
     public String toString() {
-        return "Request{" +
-                "code='" + code + '\'' +
-                ", result='" + result + '\'' +
-                '}';
+        return getJsonRequest(this);
     }
 }

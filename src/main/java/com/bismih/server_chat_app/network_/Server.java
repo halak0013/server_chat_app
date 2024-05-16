@@ -5,6 +5,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import org.json.JSONArray;
+
 import com.bismih.server_chat_app.components.Request;
 import com.bismih.server_chat_app.constants.s;
 import com.bismih.server_chat_app.utils.JsonProcessor;
@@ -80,6 +82,9 @@ public class Server {
                     send_messages_to_users(client, result, msg);
                 else
                     send_msg(Request.getJsonRequest(result), client);
+                if (result.getCode().equals("online_check")){
+                    send_online_users(result.getResult(), client);
+                }
                 System.out.println("server listen: " + msg);
             }
         } catch (Exception e) {
@@ -105,7 +110,6 @@ public class Server {
         if (receiver == -1) {
             for (int i = 0; i < clients.size(); i++) {
                 int user_id = clients.get(i).user_id;
-                System.out.println("***********" + user_id + "***********");
                 if (user_list.contains(user_id)) {
                     send_msg(Request.getJsonRequest(result), clients.get(i));
                     System.out.println("sunucu mesaj gonderildi: " + clients.get(i).user_id);
@@ -114,8 +118,6 @@ public class Server {
         } else {
             // send_msg(Request.getJsonRequest(result), client);
             for (int i = 0; i < clients.size(); i++) {
-                int user_id = clients.get(i).user_id;
-                System.out.println("***********" + user_id + "***********");
                 if (user_list.contains(receiver)) {
                     System.out.println("sunucu mesaj gonderildi: " + clients.get(i).user_id);
                     send_msg(Request.getJsonRequest(result), clients.get(i));
@@ -123,6 +125,18 @@ public class Server {
             }
         }
         System.out.println("server listen aranan nokta: " + msg + " result: " + result);
+    }
+
+    private void send_online_users(String json, ClientNode client){
+        JSONArray jArr = new JSONArray(json); //user_id array
+        JSONArray result = new JSONArray();
+        for (int i = 0; i < clients.size(); i++) {
+            int user_id = clients.get(i).user_id;
+            if (jArr.toList().contains(user_id)) {
+                result.put(user_id);
+            }
+        }
+        send_msg(Request.getRequest("online_check", result.toString()).toString(), client);
     }
 
     public void send_msg(String msg, ClientNode client) {

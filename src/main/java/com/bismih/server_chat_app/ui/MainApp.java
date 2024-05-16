@@ -5,11 +5,14 @@
 package com.bismih.server_chat_app.ui;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import org.json.JSONArray;
 
 import com.bismih.server_chat_app.components.Messages;
 import com.bismih.server_chat_app.components.Project;
@@ -26,18 +29,23 @@ import com.bismih.server_chat_app.view.buttons.ButtonN;
  *
  * @author bismih
  */
+//System\.out\.println\s*\(.+?\);
 public class MainApp extends javax.swing.JFrame {
 
     private static JFrame frame;
     private static Client client;
     private static ClientFile clientFile;
-    private static int user_id;
-    private static int receiver_id;
-    private static JPanel pnl_elements_s;
     private static JPanel pnl_messages_s;
     private static SendPanel pnl_send_msg_s;
     private static JLabel lb_id_s;
+    private static JPanel pnl_elements_s;
+    
     private static int project_id_global;
+    private static int user_id;
+    private static int receiver_id;
+    private static ArrayList<ButtonN> btn_user_list;
+
+
 
     public MainApp(int id) {
         initComponents();
@@ -63,6 +71,20 @@ public class MainApp extends javax.swing.JFrame {
         clientFile = new ClientFile();
         clientFile.start_client();
         clientFile.send_msg(JsonProcessor.set_id(user_id));
+
+        btn_user_list = new ArrayList<>();
+
+        Thread t = new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(5000);
+                    check_user_online();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        t.start();
 
 
         
@@ -98,7 +120,7 @@ public class MainApp extends javax.swing.JFrame {
             receiver_id = -1;
             Project.getProjects(request.getResult()).forEach(project -> {
                 System.out.println(project.getName() + " " + project.getProject_id());
-                ButtonN btn = ButtonN.getBtn(project.getName() + " " + project.getProject_id());
+                ButtonN<Project> btn = ButtonN.getBtn(project.getName() + " " + project.getProject_id());
                 // butonlara tıklanınca mesajları getirme
                 btn.addActionListener(arg0 -> {
                     client.send_msg(JsonProcessor.get_msg(project.getProject_id(), receiver_id, user_id));
@@ -113,10 +135,12 @@ public class MainApp extends javax.swing.JFrame {
             // ? kullanıcıların getirilmesi
         }else if (request.getCode().equals(s.GET_USERS)) {
             pnl_elements_s.removeAll();
-            // TODO: kullanıcıların bilgilerine erişilmesi gerekebilir
             User.get_users(request.getResult()).forEach(user -> {
                 System.out.println(user.getName() + " " + user.getUser_name());
-                ButtonN btn = ButtonN.getBtn(user.getName() + " " + user.getUser_name());
+                ButtonN<User> btn = ButtonN.getBtn(user.getName() + " " + user.getUser_name());
+                btn.privateInfo = user;
+                btn_user_list.add(btn);
+
                 btn.addActionListener(arg0 -> {
                     receiver_id = user.getId();
                     client.send_msg(JsonProcessor.get_msg(project_id_global, user.getId(), user_id));
@@ -124,6 +148,19 @@ public class MainApp extends javax.swing.JFrame {
                 });
                 pnl_elements_s.add(btn);
             });
+            check_user_online();
+        }
+
+        else if (request.getCode().equals("online_check")){
+            JSONArray jArr = new JSONArray(request.getResult());
+            for (ButtonN<User> btn : btn_user_list) {
+                if (jArr.toList().contains(btn.privateInfo.getId())) {
+                    btn.setEnabled(true);
+                    btn.setText(btn.getText()+" *");
+                } else {
+                    btn.setEnabled(false);
+                }
+            }
         }
 
         else if (request.getCode().equals("new_msg")) {
@@ -145,8 +182,15 @@ public class MainApp extends javax.swing.JFrame {
         frame.repaint();
     }
 
+    private static void check_user_online() {
+        JSONArray jArr = new JSONArray();
+        for (ButtonN<User> btn : btn_user_list) {
+            jArr.put(btn.privateInfo.getId());
+        }
+        client.send_msg(JsonProcessor.online_check(jArr.toString()));
+    }
+
     private static void add_msg_to_panel(Messages msg_) {
-        //TODO: bunu kontrol et
         if(project_id_global == msg_.getProject_id())
         pnl_messages_s.add(new JLabel(msg_.getMsg() + " " + msg_.getSender_id()
                 + " " + msg_.getReceiver_id() + " " + msg_.getProject_id() + " " + msg_.getType()));

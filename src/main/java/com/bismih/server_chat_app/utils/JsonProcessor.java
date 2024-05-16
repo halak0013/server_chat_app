@@ -173,6 +173,9 @@ public class JsonProcessor {
                     user_id = jObj.getInt(s.USER_ID);
                     request = new Request(s.GET_PROJECT_LINK, Db_process.get_project_link(user_id, project_id));
                     break;
+                case "online_check":
+                    request = new Request("online_check", jObj.getString("result"));
+                    break;
                 case "exit":
                     request = new Request("exit", "exit");
                     break;
@@ -229,6 +232,11 @@ public class JsonProcessor {
     public static Request getRequest(String json) {
         JSONObject jObj = new JSONObject(json);
         return new Request(jObj.getString("code"), jObj.getString("result"));
+    }
+
+    public static String online_check(String string) {
+        Request request = new Request("online_check", string);
+        return request.toString();
     }
 
 }
