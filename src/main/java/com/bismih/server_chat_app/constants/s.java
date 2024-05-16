@@ -9,8 +9,11 @@ public class s {
     public static final String GET_PROJECT = "get_project";
     public static final String ADD_PROJECT = "add_project";
     public static final String JOIN_PROJECT = "join_project";
+    public static final String NEW_PROJECT = "new_project";
     public static final String GET_PROJECTS = "get_projects";
     public static final String GET_USERS = "get_users";
+    public static final String GET_PROJECT_LINK = "get_project_link";
+
 
     public static final String PROJECT_NAME = "project_name";
     public static final String USER_NAME = "user_name";

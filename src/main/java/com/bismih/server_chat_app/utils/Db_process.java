@@ -58,7 +58,6 @@ public class Db_process {
             db_helper.closeConnection();
         }
         return result;
-
     }
 
     public static String add_project(String project_name, int admin, String project_link) {
@@ -67,7 +66,7 @@ public class Db_process {
         db_helper.start_connection();
         try {
             db_helper.add_row("projects", new String[] { s.PROJECT_NAME, "admin", "link" },
-                    new String[] { project_name, Integer.toString(admin), project_link });
+                    new String[][] { { project_name, "0" }, { Integer.toString(admin), "1" }, { project_link, "0" } });
             result = "success";
         } catch (SQLException e) {
             e.printStackTrace();
@@ -85,7 +84,7 @@ public class Db_process {
         db_helper.start_connection();
         try {
             db_helper.add_row("user_project", new String[] { s.USER_ID, s.PROJECT_ID },
-                    new String[] { Integer.toString(user_id), Integer.toString(project_id) });
+                    new String[][] { { Integer.toString(user_id), "1" }, { Integer.toString(project_id), "1" } });
             result = "success";
         } catch (SQLException e) {
             e.printStackTrace();
@@ -93,6 +92,22 @@ public class Db_process {
         }
         db_helper.closeConnection();
         return result;
+    }
+
+    public static int get_project_id_form_link(String link) {
+        db_helper.start_connection();
+        String query = "select id from projects where link = '" + link + "'";
+        ResultSet rs = db_helper.get_query(query);
+        int project_id = -1;
+        try {
+            while (rs.next()) {
+                project_id = rs.getInt("id");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        db_helper.closeConnection();
+        return project_id;
     }
 
     public static String convert_json(String msg, String type) {
@@ -128,12 +143,12 @@ public class Db_process {
         db_helper.start_connection();
         String query = "select id, msg, receiver_id, sender_id from messages where project_id = " + project_id;
         if (receiver_id != -1)
-            query +=" and ((receiver_id = " + receiver_id + " and sender_id = " + sender_id + ") or (receiver_id = "
-                + sender_id + " and sender_id = " + receiver_id + "))";
+            query += " and ((receiver_id = " + receiver_id + " and sender_id = " + sender_id + ") or (receiver_id = "
+                    + sender_id + " and sender_id = " + receiver_id + "))";
         else
             query += " and receiver_id = -1";
         query += " order by id asc";
-        
+
         System.out.println(query);
         ResultSet rs = db_helper.get_query(query);
         JSONArray jArr = new JSONArray();
@@ -222,9 +237,6 @@ public class Db_process {
                 jTmp.put("name", name);
                 jTmp.put(s.USER_NAME, user_name);
                 jArr.put(jTmp);
-                // jObj.put(Integer.toString(i), "{\"user_id\":\"" + rs.getString(s.USER_ID) +
-                // "\", \"name\":\"" + rs.getString(s.PROJECT_NAME) + "\"}");
-                
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -232,6 +244,24 @@ public class Db_process {
 
         db_helper.closeConnection();
         return jArr.toString();
+    }
+
+    public static String get_project_link(int user_id, int project_id){
+        db_helper.start_connection();
+        String query = "select link from projects where id = " + project_id + " and admin = " + user_id;
+        ResultSet rs = db_helper.get_query(query);
+        String link = "";
+        try {
+            while (rs.next()) {
+                link = rs.getString("link");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        db_helper.closeConnection();
+        return link;
+
     }
 
     public static String userValidation(String user_name, String password) {

@@ -158,7 +158,7 @@ public class Login_Client extends javax.swing.JFrame {
     }// GEN-LAST:event_bt_sign_upActionPerformed
 
     private void bt_sign_inActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bt_sign_inActionPerformed
-        client.send(JsonProcessor.sing_in(tx_user_name.getText(),
+        client.send_msg(JsonProcessor.sing_in(tx_user_name.getText(),
                 tx_password.getText()));
     }// GEN-LAST:event_bt_sign_inActionPerformed
 

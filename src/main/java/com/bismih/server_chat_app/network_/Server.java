@@ -1,10 +1,14 @@
 package com.bismih.server_chat_app.network_;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Queue;
 
 import com.bismih.server_chat_app.components.Request;
 import com.bismih.server_chat_app.constants.s;
@@ -61,17 +65,19 @@ public class Server {
             Request result;
             while (client.client_status) {
                 msg = client.sInput.readUTF();
-                System.out.println("server listen: 67" + msg);
+                if (msg.equals(""))
+                    continue;
+                System.out.println("server listen: 67" + msg + "*");
                 result = JsonProcessor.parse(msg);
                 if (result.getCode().equals("exit")) {
                     client.client_status = false;
                     client.socket.close();
                     clients.remove(client);
                     break;// !
-                }else if (result.getCode().equals("set_id"))
+                } else if (result.getCode().equals("set_id"))
                     client.user_id = Integer.parseInt(result.getResult());
 
-                System.out.println("\n\n*"+ msg +"*\n\n");
+                System.out.println("\n\n*" + msg + "*\n\n");
                 if (result.getCode().equals(s.SEND_MSG))
                     send_messages_to_users(client, result, msg);
                 else
@@ -93,7 +99,7 @@ public class Server {
 
     private void send_messages_to_users(ClientNode client, Request result, String msg) {
         int receiver = JsonProcessor.get_receiver(msg);
-        System.out.println("\n\n msg: " + msg + " result: " + result+"\n\n");
+        System.out.println("\n\n msg: " + msg + " result: " + result + "\n\n");
         Request new_result = result;
         new_result.setCode("new_msg");
         new_result.setResult(msg);
@@ -108,7 +114,7 @@ public class Server {
                 }
             }
         } else {
-            //send_msg(Request.getJsonRequest(result), client);
+            // send_msg(Request.getJsonRequest(result), client);
             for (int i = 0; i < clients.size(); i++) {
                 int user_id = clients.get(i).user_id;
                 System.out.println("***********" + user_id + "***********");
@@ -129,6 +135,47 @@ public class Server {
             System.err.println(e);
             e.printStackTrace();
         }
+    }
+
+    // https://www.geeksforgeeks.org/transfer-the-file-client-socket-to-server-socket-in-java/
+    private static void receiveFile(String fileName, DataInputStream sInput)
+            throws Exception {
+        int bytes = 0;
+        FileOutputStream fileOutputStream = new FileOutputStream(fileName);
+
+        long size = sInput.readLong(); // read file size
+        byte[] buffer = new byte[4 * 1024];
+        while (size > 0
+                && (bytes = sInput.read(
+                        buffer, 0,
+                        (int) Math.min(buffer.length, size))) != -1) {
+            // Here we write the file using write method
+            fileOutputStream.write(buffer, 0, bytes);
+            size -= bytes; // read upto file size
+        }
+        // Here we received file
+        System.out.println("File is Received");
+        fileOutputStream.close();
+    }
+
+    private static void sendFile(String path, DataOutputStream sOutput)
+            throws Exception {
+        int bytes = 0;
+        // Open the File where he located in your pc
+        File file = new File(path);
+        FileInputStream fileInputStream = new FileInputStream(file);
+
+        // Here we send the File to Server
+        sOutput.writeLong(file.length());
+        // Here we break file into chunks
+        byte[] buffer = new byte[4 * 1024];
+        while ((bytes = fileInputStream.read(buffer)) != -1) {
+            // Send the file to Server Socket
+            sOutput.write(buffer, 0, bytes);
+            sOutput.flush();
+        }
+        // close the file here
+        fileInputStream.close();
     }
 
     public static void main(String[] args) {

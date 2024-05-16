@@ -1,8 +1,6 @@
 package com.bismih.server_chat_app.utils;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -88,6 +86,21 @@ public class JsonProcessor {
         return jObj.toString();
     }
 
+    public static String get_project_id(String link) {
+        JSONObject jObj = new JSONObject();
+        jObj.put("code", "get_project_id");
+        jObj.put("link", link);
+        return jObj.toString();
+    }
+
+    public static String get_project_link(int user_id, int project_id) {
+        JSONObject jObj = new JSONObject();
+        jObj.put("code", s.GET_PROJECT_LINK);
+        jObj.put(s.USER_ID, user_id);
+        jObj.put(s.PROJECT_ID, project_id);
+        return jObj.toString();
+    }
+
     public static String exit() {
         JSONObject jObj = new JSONObject();
         jObj.put("code", "exit");
@@ -98,6 +111,7 @@ public class JsonProcessor {
     // ?Server parse and send to client part
     public static Request parse(String json) {
         try {
+            System.out.println("parse: " + json + "*");
             JSONObject jObj = new JSONObject(json);
             String code = jObj.getString("code");
             Request request = null;
@@ -146,9 +160,18 @@ public class JsonProcessor {
                     project_id = jObj.getInt(s.PROJECT_ID);
                     request = new Request(s.JOIN_PROJECT, Db_process.add_user_project_relation(user_id, project_id));
                     break;
+                case "get_project_id":
+                    String link = jObj.getString("link");
+                    request = new Request("get_project_id", Db_process.get_project_id_form_link(link) + "");
+                    break;
                 case "set_id":
                     user_id = jObj.getInt("user_id");
                     request = new Request("set_id", user_id + "");
+                    break;
+                case s.GET_PROJECT_LINK:
+                    project_id = jObj.getInt(s.PROJECT_ID);
+                    user_id = jObj.getInt(s.USER_ID);
+                    request = new Request(s.GET_PROJECT_LINK, Db_process.get_project_link(user_id, project_id));
                     break;
                 case "exit":
                     request = new Request("exit", "exit");

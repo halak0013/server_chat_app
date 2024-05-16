@@ -144,7 +144,7 @@ public class Sing_Up_Client extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bt_sign_upActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bt_sign_upActionPerformed
-        client.send(JsonProcessor.sing_up(tx_name.getText(),
+        client.send_msg(JsonProcessor.sing_up(tx_name.getText(),
                 tx_user_name.getText(), tx_password.getText()));
 
     }// GEN-LAST:event_bt_sign_upActionPerformed
