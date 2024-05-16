@@ -40,7 +40,7 @@ public class SendPanel extends javax.swing.JPanel {
         btn_send_file.setPreferredSize(new java.awt.Dimension(50, 40));
         add(btn_send_file);
 
-        btn_send.setText(" > ");
+        btn_send.setText(">");
         btn_send.setFont(new java.awt.Font("Arial Black", 0, 13)); // NOI18N
         btn_send.setPreferredSize(new java.awt.Dimension(50, 40));
         add(btn_send);

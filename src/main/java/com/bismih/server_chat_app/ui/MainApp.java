@@ -156,7 +156,6 @@ public class MainApp extends javax.swing.JFrame {
             for (ButtonN<User> btn : btn_user_list) {
                 if (jArr.toList().contains(btn.privateInfo.getId())) {
                     btn.setEnabled(true);
-                    btn.setText(btn.getText()+" *");
                 } else {
                     btn.setEnabled(false);
                 }
