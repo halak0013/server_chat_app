@@ -4,6 +4,9 @@
  */
 package com.bismih.server_chat_app.ui;
 
+import java.io.File;
+
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -14,6 +17,7 @@ import com.bismih.server_chat_app.components.Request;
 import com.bismih.server_chat_app.components.User;
 import com.bismih.server_chat_app.constants.s;
 import com.bismih.server_chat_app.network_.Client;
+import com.bismih.server_chat_app.network_.ClientFile;
 import com.bismih.server_chat_app.utils.JsonProcessor;
 import com.bismih.server_chat_app.view.TextField.SendPanel;
 import com.bismih.server_chat_app.view.buttons.ButtonN;
@@ -26,6 +30,7 @@ public class MainApp extends javax.swing.JFrame {
 
     private static JFrame frame;
     private static Client client;
+    private static ClientFile clientFile;
     private static int user_id;
     private static int receiver_id;
     private static JPanel pnl_elements_s;
@@ -54,14 +59,31 @@ public class MainApp extends javax.swing.JFrame {
         client.start_client();
         client.send_msg(JsonProcessor.get_project(user_id));
         client.send_msg(JsonProcessor.set_id(user_id));
-        client.send_msg("");
 
+        clientFile = new ClientFile();
+        clientFile.start_client();
+        clientFile.send_msg(JsonProcessor.set_id(user_id));
+
+
+        
         //? mesaj gönderme panel butonu
-        ButtonN btn = pnl_send_msg_s.get_btn_send();
-        btn.addActionListener(arg0 -> {
+        ButtonN btn_send_msg = pnl_send_msg_s.get_btn_send();
+        btn_send_msg.addActionListener(arg0 -> {
             client.send_msg(JsonProcessor.send_msg(pnl_send_msg_s.get_msg(),
                     "text", receiver_id, user_id, project_id_global));
             pnl_send_msg_s.clear();
+        });
+
+        ButtonN btn_send_file = pnl_send_msg_s.get_btn_file_send();
+        btn_send_file.addActionListener(arg0 -> {
+            JFileChooser fileChooser = new JFileChooser();
+            int result = fileChooser.showOpenDialog(frame);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+                String filePath = selectedFile.getAbsolutePath();
+                System.out.println("Selected file: " + filePath);
+                clientFile.send_file(filePath, receiver_id, project_id_global);
+            }
         });
 
     }
@@ -124,6 +146,8 @@ public class MainApp extends javax.swing.JFrame {
     }
 
     private static void add_msg_to_panel(Messages msg_) {
+        //TODO: bunu kontrol et
+        if(project_id_global == msg_.getProject_id())
         pnl_messages_s.add(new JLabel(msg_.getMsg() + " " + msg_.getSender_id()
                 + " " + msg_.getReceiver_id() + " " + msg_.getProject_id() + " " + msg_.getType()));
     }

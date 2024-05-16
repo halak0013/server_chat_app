@@ -208,6 +208,18 @@ public class JsonProcessor {
         return result;
     }
 
+    public static ArrayList<Integer> get_users_id(int project_id) {
+        ArrayList<Integer> result = new ArrayList<>();
+        JSONArray jArr = new JSONArray(Db_process.getUsers(project_id));
+
+        for (int i = 0; i < jArr.length(); i++) {
+            JSONObject jObj2 = jArr.getJSONObject(i);
+            int user_id = jObj2.getInt(s.USER_ID);
+            result.add(user_id);
+        }
+        return result;
+    }
+
     public static int get_receiver(String json) {
         System.out.println("get_receiver: " + json);
         JSONObject jObj = new JSONObject(json);

@@ -27,12 +27,18 @@ public class SendPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         tx_msg = new com.bismih.server_chat_app.view.TextField.TextFeild1();
+        btn_send_file = new com.bismih.server_chat_app.view.buttons.ButtonN();
         btn_send = new com.bismih.server_chat_app.view.buttons.ButtonN();
 
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.X_AXIS));
 
         tx_msg.setText("Mesajınızı yazınız");
         add(tx_msg);
+
+        btn_send_file.setText("+");
+        btn_send_file.setFont(new java.awt.Font("Arial Black", 0, 13)); // NOI18N
+        btn_send_file.setPreferredSize(new java.awt.Dimension(50, 40));
+        add(btn_send_file);
 
         btn_send.setText(" > ");
         btn_send.setFont(new java.awt.Font("Arial Black", 0, 13)); // NOI18N
@@ -43,6 +49,10 @@ public class SendPanel extends javax.swing.JPanel {
 
     public ButtonN get_btn_send(){
         return btn_send;
+    }
+    
+    public ButtonN get_btn_file_send(){
+        return btn_send_file;
     }
     
     public TextFeild1 get_tx_msg(){
@@ -59,6 +69,7 @@ public class SendPanel extends javax.swing.JPanel {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.bismih.server_chat_app.view.buttons.ButtonN btn_send;
+    private com.bismih.server_chat_app.view.buttons.ButtonN btn_send_file;
     private com.bismih.server_chat_app.view.TextField.TextFeild1 tx_msg;
     // End of variables declaration//GEN-END:variables
 }

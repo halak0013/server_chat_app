@@ -7,6 +7,7 @@ public class Constants {
     public static String server_ip = "localhost";
     //public static String server_ip = "45.89.28.240";
     public static int server_port = 57145;
+    public static int file_server_port = 14571;
 
     private static Color color = new Color(141, 190, 223);
 
