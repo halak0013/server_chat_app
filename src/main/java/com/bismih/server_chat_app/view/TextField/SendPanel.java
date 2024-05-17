@@ -10,10 +10,10 @@ import com.bismih.server_chat_app.view.buttons.ButtonN;
  *
  * @author bismih
  */
-public class send_panel extends javax.swing.JPanel {
+public class SendPanel extends javax.swing.JPanel {
 
     
-    public send_panel() {
+    public SendPanel() {
         initComponents();
     }
 
@@ -27,6 +27,7 @@ public class send_panel extends javax.swing.JPanel {
     private void initComponents() {
 
         tx_msg = new com.bismih.server_chat_app.view.TextField.TextFeild1();
+        btn_send_file = new com.bismih.server_chat_app.view.buttons.ButtonN();
         btn_send = new com.bismih.server_chat_app.view.buttons.ButtonN();
 
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.X_AXIS));
@@ -34,9 +35,14 @@ public class send_panel extends javax.swing.JPanel {
         tx_msg.setText("Mesajınızı yazınız");
         add(tx_msg);
 
+        btn_send_file.setText("+");
+        btn_send_file.setFont(new java.awt.Font("Arial Black", 0, 13)); // NOI18N
+        btn_send_file.setPreferredSize(new java.awt.Dimension(50, 40));
+        add(btn_send_file);
+
         btn_send.setText(">");
-        btn_send.setFont(new java.awt.Font("Arial Black", 1, 17)); // NOI18N
-        btn_send.setPreferredSize(new java.awt.Dimension(23, 23));
+        btn_send.setFont(new java.awt.Font("Arial Black", 0, 13)); // NOI18N
+        btn_send.setPreferredSize(new java.awt.Dimension(50, 40));
         add(btn_send);
     }// </editor-fold>//GEN-END:initComponents
 
@@ -45,12 +51,25 @@ public class send_panel extends javax.swing.JPanel {
         return btn_send;
     }
     
+    public ButtonN get_btn_file_send(){
+        return btn_send_file;
+    }
+    
     public TextFeild1 get_tx_msg(){
         return tx_msg;
+    }
+
+    public void clear(){
+        tx_msg.setText("");
+    }
+
+    public String get_msg(){
+        return tx_msg.getText();
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.bismih.server_chat_app.view.buttons.ButtonN btn_send;
+    private com.bismih.server_chat_app.view.buttons.ButtonN btn_send_file;
     private com.bismih.server_chat_app.view.TextField.TextFeild1 tx_msg;
     // End of variables declaration//GEN-END:variables
 }

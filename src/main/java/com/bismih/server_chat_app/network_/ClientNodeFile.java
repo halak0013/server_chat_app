@@ -5,14 +5,14 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
 
-public class ClientNode {
+public class ClientNodeFile {
     public Socket socket;
     public DataInputStream sInput;
     public DataOutputStream sOutput;
     public boolean client_status = true;
     public int user_id;
 
-    public ClientNode(Socket socket) {
+    public ClientNodeFile(Socket socket) {
         this.socket = socket;
         try {
             sInput = new DataInputStream(socket.getInputStream());

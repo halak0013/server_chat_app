@@ -6,12 +6,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.net.Socket;
-import java.util.function.Consumer;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import org.json.JSONObject;
 
 import com.bismih.server_chat_app.constants.Constants;
 import com.bismih.server_chat_app.utils.JsonProcessor;
 
-public class Client {
+public class ClientFile {
     // listen içine bir tane runnable func alcak
     // gelen veriye göre direk arayüz fonksiyonunun parametresi verilip
     // arayüz fonksiyonu çalıştırılacak
@@ -23,13 +25,10 @@ public class Client {
     private int port;
     private boolean client_status = false;
 
-    // Runnable ui_worker;
-    Consumer<String> ui_worker;
 
-    public Client(Consumer<String> ui_worker) {
-        this.ui_worker = ui_worker;
+    public ClientFile() {
         this.server = Constants.server_ip;
-        this.port = Constants.server_port;
+        this.port = Constants.file_server_port;
     }
 
     public boolean start_client() {
@@ -51,9 +50,8 @@ public class Client {
         Thread listenThread = new Thread(() -> {
             while (client_status) {
                 try {
-                    String msg = sInput.readUTF();
-                    System.out.println("client listen: " + msg);
-                    ui_worker.accept(msg);
+                    String file_name = sInput.readUTF();
+                    receiveFile(file_name, sInput);
                 } catch (Exception e) {
                     System.out.println("Error listening to server:" + e);
                     e.printStackTrace();
@@ -62,6 +60,16 @@ public class Client {
             }
         });
         listenThread.start();
+    }
+
+    public void send_file(String path, int receiver_id, int project_id){
+        JSONObject json = new JSONObject();
+        String file_name = path.substring(path.lastIndexOf("/") + 1);
+        json.put("file_name", file_name);
+        json.put("receiver_id", receiver_id);
+        json.put("project_id", project_id);
+        send_msg(json.toString());
+        sendFile(path, sOutput);
     }
 
     public void send_msg(String msg) {
@@ -75,30 +83,39 @@ public class Client {
     }
 
     // https://www.geeksforgeeks.org/transfer-the-file-client-socket-to-server-socket-in-java/
-    private static void receiveFile(String fileName, DataInputStream sInput)
-            throws Exception {
+    private static void receiveFile(String fileName, DataInputStream sInput) {
         int bytes = 0;
-        FileOutputStream fileOutputStream = new FileOutputStream(fileName);
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss");
+        String time = now.format(formatter);
+        fileName = time+fileName;
+        System.out.println("File name: " + fileName);
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(fileName);
 
-        long size = sInput.readLong(); // read file size
-        byte[] buffer = new byte[4 * 1024];
-        while (size > 0
-                && (bytes = sInput.read(
-                        buffer, 0,
-                        (int) Math.min(buffer.length, size))) != -1) {
-            // Here we write the file using write method
-            fileOutputStream.write(buffer, 0, bytes);
-            size -= bytes; // read upto file size
+            long size = sInput.readLong(); // read file size
+            byte[] buffer = new byte[4 * 1024];
+            while (size > 0
+                    && (bytes = sInput.read(
+                            buffer, 0,
+                            (int) Math.min(buffer.length, size))) != -1) {
+                // Here we write the file using write method
+                fileOutputStream.write(buffer, 0, bytes);
+                size -= bytes; // read upto file size
+            }
+            // Here we received file
+            System.out.println("File is Received");
+            fileOutputStream.close();
+        } catch (Exception e) {
+            System.err.println(e);
+            e.printStackTrace();
         }
-        // Here we received file
-        System.out.println("File is Received");
-        fileOutputStream.close();
     }
 
-    private static void sendFile(String path, DataOutputStream sOutput)
-            throws Exception {
+    private static void sendFile(String path, DataOutputStream sOutput) {
         int bytes = 0;
-        // Open the File where he located in your pc
+        try {
+            // Open the File where he located in your pc
         File file = new File(path);
         FileInputStream fileInputStream = new FileInputStream(file);
 
@@ -113,6 +130,10 @@ public class Client {
         }
         // close the file here
         fileInputStream.close();
+        } catch (Exception e) {
+            System.err.println(e);
+            e.printStackTrace();
+        }
     }
 
     public void disconnect() {

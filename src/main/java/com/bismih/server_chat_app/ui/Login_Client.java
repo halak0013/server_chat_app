@@ -5,12 +5,12 @@
 package com.bismih.server_chat_app.ui;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
-import org.json.JSONObject;
-
+import com.bismih.server_chat_app.components.Request;
+import com.bismih.server_chat_app.constants.s;
 import com.bismih.server_chat_app.network_.Client;
 import com.bismih.server_chat_app.utils.JsonProcessor;
-import com.formdev.flatlaf.intellijthemes.FlatArcDarkOrangeIJTheme;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDeepOceanIJTheme;
 
 /**
@@ -30,18 +30,23 @@ public class Login_Client extends javax.swing.JFrame {
     }
 
     private static void sign_in(String msg) {
-        System.out.println(msg);
-        JSONObject jObj = new JSONObject(msg);
-        String code = jObj.getString("code");
-        String result = jObj.getString("result");
-        System.out.println("code: " + code + " result: " + result);
-        if (code.equals("sign_in")) {
-            if (!result.equals("-1")) {
-                JFrame f = new MainApp(1);
-                f.setVisible(true);
-                client.disconnect();
-                frame.dispose();
+        System.out.println("sign_in: " + msg);
+        Request request = Request.getRequest(msg);
+        System.out.println("sign_in: " + request.getCode() + " " + request.getResult());
+        try {
+            if (request.getCode().equals(s.SIGN_IN)) {
+                if (!request.getResult().equals("-1")) {
+                    JFrame mainApp = new 
+                        MainApp(Integer.parseInt(request.getResult()));
+                    mainApp.setVisible(true);
+                    client.disconnect();
+                    frame.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Error: User name or password incorrect!");
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -53,7 +58,8 @@ public class Login_Client extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         tx_user_name = new com.bismih.server_chat_app.view.TextField.TextFeild1();
@@ -93,40 +99,52 @@ public class Login_Client extends javax.swing.JFrame {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(215, 215, 215)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(tx_password, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2)
-                            .addComponent(tx_user_name, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(296, 296, 296)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(bt_sign_up, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(bt_sign_in, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(249, Short.MAX_VALUE))
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addGap(215, 215, 215)
+                                                .addGroup(layout
+                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(tx_password,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE, 278,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(jLabel2)
+                                                        .addComponent(tx_user_name,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE, 278,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(jLabel1)))
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addGap(296, 296, 296)
+                                                .addGroup(layout
+                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(bt_sign_up,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE, 107,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(bt_sign_in,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE, 107,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addContainerGap(249, Short.MAX_VALUE)));
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(67, 67, 67)
-                .addComponent(jLabel1)
-                .addGap(27, 27, 27)
-                .addComponent(tx_user_name, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30)
-                .addComponent(jLabel2)
-                .addGap(27, 27, 27)
-                .addComponent(tx_password, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(26, 26, 26)
-                .addComponent(bt_sign_in, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(bt_sign_up, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(34, Short.MAX_VALUE))
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(67, 67, 67)
+                                .addComponent(jLabel1)
+                                .addGap(27, 27, 27)
+                                .addComponent(tx_user_name, javax.swing.GroupLayout.PREFERRED_SIZE, 47,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(30, 30, 30)
+                                .addComponent(jLabel2)
+                                .addGap(27, 27, 27)
+                                .addComponent(tx_password, javax.swing.GroupLayout.PREFERRED_SIZE, 47,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(26, 26, 26)
+                                .addComponent(bt_sign_in, javax.swing.GroupLayout.PREFERRED_SIZE, 42,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(bt_sign_up, javax.swing.GroupLayout.PREFERRED_SIZE, 42,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(34, Short.MAX_VALUE)));
 
         pack();
         setLocationRelativeTo(null);
@@ -140,7 +158,8 @@ public class Login_Client extends javax.swing.JFrame {
     }// GEN-LAST:event_bt_sign_upActionPerformed
 
     private void bt_sign_inActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bt_sign_inActionPerformed
-        client.send(JsonProcessor.sing_in(tx_user_name.getText(), tx_password.getText()));
+        client.send_msg(JsonProcessor.sing_in(tx_user_name.getText(),
+                tx_password.getText()));
     }// GEN-LAST:event_bt_sign_inActionPerformed
 
     /**
